@@ -15,7 +15,9 @@
       "Bash(npx vite:*)",
       "Bash(npm ls:*)",
       "Bash(wc -l \"Y:/github/LMT KIbertests/chronicle\"/services/*.ts)",
-      "Bash(wc -l \"Y:/github/LMT KIbertests/chronicle\"/types.ts \"Y:/github/LMT KIbertests/chronicle\"/components/*.tsx)"
+      "Bash(wc -l \"Y:/github/LMT KIbertests/chronicle\"/types.ts \"Y:/github/LMT KIbertests/chronicle\"/components/*.tsx)",
+      "Bash(\"/c/Users/Prometheus/AppData/Local/Programs/Python/Python312/python.exe\" \"Y:/TEMP/generate_assets.py\")",
+      "Bash(ls /c/Windows/Fonts/SixCaps*)"
     ]
   }
 }
