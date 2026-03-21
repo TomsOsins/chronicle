@@ -72,10 +72,10 @@ const PieChart: React.FC<{ data: { label: string; value: number }[]; size?: numb
 
         {/* Center text */}
         <circle cx={center} cy={center} r={innerRadius - 4} fill="#121212" />
-        <text x={center} y={center - 6} textAnchor="middle" className="fill-[#F4F1EA]/20 text-[7px] font-black uppercase" style={{ fontFamily: 'JetBrains Mono' }}>
+        <text x={center} y={center - 6} textAnchor="middle" className="fill-[#F4F1EA]/40 text-[8px] font-black uppercase" style={{ fontFamily: 'JetBrains Mono' }}>
           CENSUS
         </text>
-        <text x={center} y={center + 10} textAnchor="middle" className="fill-[#F4F1EA] text-[14px] font-black" style={{ fontFamily: 'JetBrains Mono' }}>
+        <text x={center} y={center + 10} textAnchor="middle" className="fill-[#F4F1EA] text-[16px] font-black" style={{ fontFamily: 'JetBrains Mono' }}>
           {total}%
         </text>
       </svg>
@@ -91,18 +91,18 @@ export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
       {/* Overview */}
       <StaggeredItem index={0}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Societal Overview</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Societal Overview</div>
           <div className="grid grid-cols-2 gap-3">
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono mb-2">Civil Unrest Index</div>
-              <div className="text-2xl font-black text-[#F4F1EA] mono">
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Civil Unrest Index</div>
+              <div className="text-[28px] font-black text-[#F4F1EA] mono">
                 <AnimatedNumber value={unrestIndex} />
               </div>
               <AnimatedBar value={unrestIndex} delay={200} height="h-1.5" />
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono mb-2">Caste Hierarchy</div>
-              <div className="text-[9px] font-bold uppercase text-[#F4F1EA]/50 mono mt-2 leading-relaxed">{casteHierarchy}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Caste Hierarchy</div>
+              <div className="text-[10px] font-bold uppercase text-[#F4F1EA]/70 mono mt-2 leading-relaxed">{casteHierarchy}</div>
             </div>
           </div>
         </section>
@@ -111,7 +111,7 @@ export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
       {/* Demographic Pie + Legend */}
       <StaggeredItem index={1}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Demographic Matrix</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Demographic Matrix</div>
           <div className="border border-white/5 p-6 hover:border-[#FF2C2C]/20 transition-colors">
             <div className="flex items-center gap-8">
               <PieChart data={matrix.map(d => ({ label: d.species, value: d.percentage }))} />
@@ -123,8 +123,8 @@ export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
                       <div className="w-2.5 h-2.5 shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono">{demo.species}</span>
-                          <span className="text-[10px] font-black mono text-[#F4F1EA]/50">
+                          <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono">{demo.species}</span>
+                          <span className="text-[11px] font-black mono text-[#F4F1EA]/70">
                             <AnimatedNumber value={demo.percentage} suffix="%" />
                           </span>
                         </div>

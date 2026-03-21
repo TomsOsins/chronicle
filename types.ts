@@ -121,7 +121,8 @@ export enum ViewMode {
   DIVINE = 'THEOLOGY',
   ECONOMY = 'COMMERCE',
   SOCIETY = 'SOCIETY',
-  STEEL = 'DEFENSE'
+  STEEL = 'DEFENSE',
+  TELEMETRY = 'TELEMETRY'
 }
 
 export interface Ledger {

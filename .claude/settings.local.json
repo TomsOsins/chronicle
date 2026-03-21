@@ -6,7 +6,11 @@
       "Bash(rm metadata.json)",
       "Bash(npm run:*)",
       "Bash(gh repo:*)",
-      "Bash(where gh:*)"
+      "Bash(where gh:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(cygpath -w '$\\(which npx\\)')",
+      "Read(//y//**)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

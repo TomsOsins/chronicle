@@ -18,10 +18,10 @@ export const DataPanel: React.FC<DataPanelProps> = ({ label, value, chartHeights
 
   return (
     <div className="border border-white/10 p-4 bg-transparent hover:border-[#FF2C2C]/30 transition-colors animate-border-pulse relative overflow-hidden">
-      <span className="text-[9px] uppercase mb-2 block font-black tracking-[0.3em] text-[#FF2C2C]/60 mono">
+      <span className="text-[10px] uppercase mb-2 block font-black tracking-[0.3em] text-[#FF2C2C]/75 mono">
         {label}
       </span>
-      <div className="text-lg font-black uppercase tracking-tight text-[#F4F1EA] mono">
+      <div className="text-xl font-black uppercase tracking-tight text-[#F4F1EA] mono">
         {value}
       </div>
       <div className="h-8 flex items-end gap-[2px] mt-3">

@@ -66,14 +66,14 @@ export const LeylineMap: React.FC<LeylineMapProps> = ({ nodes, magicLevel }) => 
               style={{ boxShadow: `0 0 ${8 + node.stability * 0.1}px currentColor` }}
             />
             <div className="absolute left-5 top-1/2 -translate-y-1/2 opacity-50 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              <div className="text-[8px] font-black uppercase text-[#F4F1EA] mono">{node.name}</div>
-              <div className="text-[7px] font-bold uppercase text-[#FF2C2C]/40 mono">{node.type}</div>
+              <div className="text-[9px] font-black uppercase text-[#F4F1EA] mono">{node.name}</div>
+              <div className="text-[8px] font-bold uppercase text-[#FF2C2C]/60 mono">{node.type}</div>
             </div>
           </div>
         ))}
 
         <div className="absolute bottom-3 right-3 text-right">
-          <div className="text-[7px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/15 mono mb-1">Ambient Magic</div>
+          <div className="text-[8px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/35 mono mb-1">Ambient Magic</div>
           <div className="flex gap-[2px] justify-end">
             {Array.from({ length: 10 }, (_, i) => (
               <div key={i} className={`w-1.5 h-3 transition-all duration-500 ${i < magicLevel ? 'bg-[#FF2C2C]' : 'bg-white/5'}`} style={{ transitionDelay: `${i * 80}ms` }} />
@@ -84,19 +84,19 @@ export const LeylineMap: React.FC<LeylineMapProps> = ({ nodes, magicLevel }) => 
 
       {/* Node detail list */}
       <div className="space-y-2">
-        <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-3">Resonance Nodes</div>
+        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-3">Resonance Nodes</div>
         {nodes.map((node, i) => (
           <StaggeredItem key={i} index={i}>
             <div className="border border-white/5 p-3 hover:border-[#FF2C2C]/20 transition-colors">
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono">{node.name}</span>
-                  <span className="text-[8px] font-bold uppercase text-[#FF2C2C]/35 mono ml-2">{node.type}</span>
+                  <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono">{node.name}</span>
+                  <span className="text-[9px] font-bold uppercase text-[#FF2C2C]/55 mono ml-2">{node.type}</span>
                 </div>
-                <span className="text-[8px] font-bold uppercase text-[#F4F1EA]/20 mono">{node.frequency}</span>
+                <span className="text-[9px] font-bold uppercase text-[#F4F1EA]/40 mono">{node.frequency}</span>
               </div>
               <AnimatedBar value={node.stability} delay={i * 100} height="h-1.5" />
-              <p className="text-[8px] text-[#F4F1EA]/25 mono mt-2 leading-relaxed">{node.effect}</p>
+              <p className="text-[9px] text-[#F4F1EA]/45 mono mt-2 leading-relaxed">{node.effect}</p>
             </div>
           </StaggeredItem>
         ))}

@@ -22,7 +22,7 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
     VOLATILE: 'text-[#FF2C2C] border-[#FF2C2C]/30 bg-[#FF2C2C]/5',
   };
   return (
-    <span className={`text-[9px] font-black uppercase mono px-2 py-1 border shrink-0 ${colors[status] || 'text-[#F4F1EA]/40 border-[#F4F1EA]/10'}`}>
+    <span className={`text-[10px] font-black uppercase mono px-2 py-1 border shrink-0 ${colors[status] || 'text-[#F4F1EA]/60 border-[#F4F1EA]/10'}`}>
       {status}
     </span>
   );
@@ -36,7 +36,7 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Strategic Vitals */}
       <StaggeredItem index={0}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Strategic Vitals</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Strategic Vitals</div>
           <div className="grid grid-cols-3 gap-3">
             <DataPanel label="Security" value={strategicVitals.securityRating} chartHeights={[60, 80, 70, 90, 85, 75, 95]} delay={0} />
             <DataPanel label="Trade Vol." value={`${strategicVitals.tradeVolume}/100`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 40 + strategicVitals.tradeVolume * 0.6)} delay={100} />
@@ -48,35 +48,35 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Territorial Footprint */}
       <StaggeredItem index={1}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Territorial Footprint</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Territorial Footprint</div>
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/30 mono mb-3">Chokepoints</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/50 mono mb-3">Chokepoints</div>
               <div className="space-y-2">
                 {territorialFootprint.chokepoints.map((cp, i) => (
                   <StaggeredItem key={i} index={i + 2}>
                     <div className="border border-white/5 p-3 hover:border-[#FF2C2C]/20 transition-colors">
                       <div className="flex justify-between items-center gap-2 mb-1">
-                        <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono truncate">{cp.name}</span>
+                        <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono truncate">{cp.name}</span>
                         <StatusBadge status={cp.status} />
                       </div>
-                      <p className="text-[9px] text-[#F4F1EA]/35 mono leading-relaxed">{cp.description}</p>
+                      <p className="text-[10px] text-[#F4F1EA]/55 mono leading-relaxed">{cp.description}</p>
                     </div>
                   </StaggeredItem>
                 ))}
               </div>
             </div>
             <div>
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/30 mono mb-3">Buffer Zones</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/50 mono mb-3">Buffer Zones</div>
               <div className="space-y-2">
                 {territorialFootprint.bufferZones.map((bz, i) => (
                   <StaggeredItem key={i} index={i + 2}>
                     <div className="border border-white/5 p-3 hover:border-[#FF2C2C]/20 transition-colors">
                       <div className="flex justify-between items-center gap-2 mb-1">
-                        <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono truncate">{bz.name}</span>
+                        <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono truncate">{bz.name}</span>
                         <StatusBadge status={bz.status} />
                       </div>
-                      <p className="text-[9px] text-[#F4F1EA]/35 mono leading-relaxed">{bz.description}</p>
+                      <p className="text-[10px] text-[#F4F1EA]/55 mono leading-relaxed">{bz.description}</p>
                     </div>
                   </StaggeredItem>
                 ))}
@@ -89,19 +89,19 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Resource Matrix */}
       <StaggeredItem index={3}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Resource Matrix</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Resource Matrix</div>
           <div className="border border-white/5">
             <div className="grid grid-cols-[1fr_80px_1fr] gap-4 px-4 py-2 border-b border-white/10">
-              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono">Resource</span>
-              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono">Status</span>
-              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono">Dependency</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Resource</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Status</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Dependency</span>
             </div>
             {resourceMatrix.map((r, i) => (
               <StaggeredItem key={i} index={i + 4}>
                 <div className="grid grid-cols-[1fr_80px_1fr] gap-4 px-4 py-3 border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors items-center">
-                  <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono">{r.resource}</span>
+                  <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono">{r.resource}</span>
                   <StatusBadge status={r.status} />
-                  <span className="text-[9px] text-[#F4F1EA]/40 mono">{r.dependency}</span>
+                  <span className="text-[10px] text-[#F4F1EA]/60 mono">{r.dependency}</span>
                 </div>
               </StaggeredItem>
             ))}
@@ -112,21 +112,21 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Mythic Intel */}
       <StaggeredItem index={5}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Mythic Intel</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Mythic Intel</div>
           <div className="grid grid-cols-3 gap-3">
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono mb-2">Ley Line Proximity</div>
-              <div className="text-[12px] font-black uppercase text-[#F4F1EA] mono">{mythicIntel.leyLineProximity}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Ley Line Proximity</div>
+              <div className="text-[13px] font-black uppercase text-[#F4F1EA] mono">{mythicIntel.leyLineProximity}</div>
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono mb-2">Arcane Signature</div>
-              <div className="text-[12px] font-black uppercase text-[#FF2C2C] mono animate-glitch">{mythicIntel.arcaneSignature}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Arcane Signature</div>
+              <div className="text-[13px] font-black uppercase text-[#FF2C2C] mono animate-glitch">{mythicIntel.arcaneSignature}</div>
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/25 mono mb-2">Magic Assets</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Magic Assets</div>
               <div className="space-y-1">
                 {mythicIntel.strategicMagicAssets.map((a, i) => (
-                  <div key={i} className="text-[9px] font-bold uppercase text-[#F4F1EA]/50 mono">• {a}</div>
+                  <div key={i} className="text-[10px] font-bold uppercase text-[#F4F1EA]/70 mono">• {a}</div>
                 ))}
               </div>
             </div>
@@ -137,15 +137,15 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Districts */}
       <StaggeredItem index={6}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">District Survey</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">District Survey</div>
           <div className="space-y-2">
             {city.districts.map((d, i) => (
               <StaggeredItem key={i} index={i + 7}>
                 <div className="border border-white/5 p-3 hover:border-[#FF2C2C]/20 transition-colors">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono">{d.name}</span>
+                    <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono">{d.name}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-[8px] font-bold uppercase text-[#F4F1EA]/25 mono">{d.vibe}</span>
+                      <span className="text-[9px] font-bold uppercase text-[#F4F1EA]/45 mono">{d.vibe}</span>
                       <div className="flex gap-[2px]">
                         {Array.from({ length: 10 }, (_, j) => (
                           <div key={j} className={`w-[3px] h-3 transition-all duration-500 ${j < d.dangerLevel ? 'bg-[#FF2C2C]' : 'bg-white/5'}`} style={{ transitionDelay: `${j * 50}ms` }} />
@@ -153,7 +153,7 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-[9px] text-[#F4F1EA]/35 mono leading-relaxed">{d.description}</p>
+                  <p className="text-[10px] text-[#F4F1EA]/55 mono leading-relaxed">{d.description}</p>
                 </div>
               </StaggeredItem>
             ))}
@@ -164,19 +164,19 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* NPCs */}
       <StaggeredItem index={8}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Key Personnel</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Key Personnel</div>
           <div className="space-y-2">
             {city.npcs.map((npc, i) => (
               <StaggeredItem key={i} index={i + 9}>
                 <div className="border border-white/5 p-3 hover:border-[#FF2C2C]/20 transition-colors">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-[10px] font-black uppercase text-[#F4F1EA] mono">{npc.name}</span>
-                    <span className="text-[9px] font-black uppercase text-[#FF2C2C]/50 mono">{npc.role}</span>
+                    <span className="text-[11px] font-black uppercase text-[#F4F1EA] mono">{npc.name}</span>
+                    <span className="text-[10px] font-black uppercase text-[#FF2C2C]/65 mono">{npc.role}</span>
                   </div>
-                  <p className="text-[9px] text-[#F4F1EA]/35 mono leading-relaxed mb-2">{npc.description}</p>
+                  <p className="text-[10px] text-[#F4F1EA]/55 mono leading-relaxed mb-2">{npc.description}</p>
                   <div className="border-t border-white/5 pt-2">
-                    <span className="text-[8px] font-black uppercase text-[#FF2C2C]/25 mono tracking-[0.2em]">Intel: </span>
-                    <span className="text-[9px] text-[#F4F1EA]/25 mono">{npc.secret}</span>
+                    <span className="text-[9px] font-black uppercase text-[#FF2C2C]/45 mono tracking-[0.2em]">Intel: </span>
+                    <span className="text-[10px] text-[#F4F1EA]/45 mono">{npc.secret}</span>
                   </div>
                 </div>
               </StaggeredItem>
@@ -188,14 +188,14 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Rumors */}
       <StaggeredItem index={10}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Active Rumors</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Active Rumors</div>
           <div className="space-y-2">
             {city.rumors.map((r, i) => (
               <StaggeredItem key={i} index={i + 11}>
                 <div className="border border-white/5 p-3 flex gap-3 items-start hover:border-[#FF2C2C]/20 transition-colors">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[9px] text-[#F4F1EA]/50 mono leading-relaxed">"{r.text}"</p>
-                    <span className="text-[8px] text-[#F4F1EA]/20 mono mt-1 block">— {r.source}</span>
+                    <p className="text-[10px] text-[#F4F1EA]/70 mono leading-relaxed">"{r.text}"</p>
+                    <span className="text-[9px] text-[#F4F1EA]/40 mono mt-1 block">— {r.source}</span>
                   </div>
                   <StatusBadge status={r.truthValue === 'True' ? 'SECURE' : r.truthValue === 'False' ? 'CRITICAL' : 'CONTESTED'} />
                 </div>
@@ -208,9 +208,9 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* History */}
       <StaggeredItem index={12}>
         <section>
-          <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Historical Record</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Historical Record</div>
           <div className="border border-white/5 p-4 relative overflow-hidden">
-            <p className="text-[9px] text-[#F4F1EA]/45 mono leading-relaxed">{city.history}</p>
+            <p className="text-[10px] text-[#F4F1EA]/65 mono leading-relaxed">{city.history}</p>
           </div>
         </section>
       </StaggeredItem>

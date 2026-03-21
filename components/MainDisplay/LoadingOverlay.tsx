@@ -47,19 +47,19 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
           const isCompleted = idx < currentProcessIndex;
           const isActive = idx === currentProcessIndex;
           const isQueued = idx > currentProcessIndex;
-          
+
           return (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className={`py-2 px-5 border transition-all duration-300 ${
-                isActive 
-                  ? 'bg-[#FF2C2C] border-[#FF2C2C] text-white translate-x-2' 
-                  : isCompleted 
-                    ? 'border-[#88E788]/30 text-[#88E788] bg-[#88E788]/5' 
+                isActive
+                  ? 'bg-[#FF2C2C] border-[#FF2C2C] text-white translate-x-2'
+                  : isCompleted
+                    ? 'border-[#88E788]/30 text-[#88E788] bg-[#88E788]/5'
                     : 'opacity-10 border-white/5 text-white/10'
               } ${isCompleted && idx === currentProcessIndex - 1 ? 'animate-[pulse_1s_ease-in-out]' : ''}`}
             >
-              <span className="mono text-[11px] font-black tracking-[0.15em] uppercase">
+              <span className="mono text-[12px] font-black tracking-[0.15em] uppercase">
                 {isCompleted ? '[ ARCHIVED ] ' : isActive ? '[ READING ] ' : '[ QUEUED ] '}
                 {proc}
               </span>
@@ -70,17 +70,17 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
 
       <footer className="mt-8 relative z-10">
         <div className="flex justify-between items-end mb-3">
-          <div className="text-[11px] font-black text-[#FF2C2C] mono uppercase tracking-[0.4em]">
+          <div className="text-[12px] font-black text-[#FF2C2C] mono uppercase tracking-[0.4em]">
             Archivist Sync Status // {overallProgress}%
           </div>
-          <div className="text-[10px] font-black text-white/20 mono uppercase">
+          <div className="text-[11px] font-black text-white/40 mono uppercase">
             Process {Math.min(currentProcessIndex + 1, LEDGER_PROCESSES.length)} of {LEDGER_PROCESSES.length}
           </div>
         </div>
         <div className="h-3 bg-white/5 border border-white/10 p-1">
-          <div 
-            className="h-full bg-[#FF2C2C] transition-all duration-300 ease-out" 
-            style={{ width: `${overallProgress}%` }} 
+          <div
+            className="h-full bg-[#FF2C2C] transition-all duration-300 ease-out"
+            style={{ width: `${overallProgress}%` }}
           />
         </div>
       </footer>
