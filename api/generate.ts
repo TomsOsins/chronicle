@@ -146,12 +146,14 @@ const citySchema = {
               domain: { type: Type.STRING },
               influence: { type: Type.NUMBER },
               heresyLevel: { type: Type.NUMBER }
-            }
+            },
+            required: ["name", "domain", "influence", "heresyLevel"]
           }
         },
         faithTension: { type: Type.NUMBER },
         miracleFrequency: { type: Type.STRING }
-      }
+      },
+      required: ["pantheon", "faithTension", "miracleFrequency"]
     },
     mercantile: {
       type: Type.OBJECT,
@@ -165,12 +167,14 @@ const citySchema = {
               price: { type: Type.STRING },
               trend: { type: Type.STRING },
               volatility: { type: Type.NUMBER }
-            }
+            },
+            required: ["name", "price", "trend", "volatility"]
           }
         },
         wealthGap: { type: Type.NUMBER },
         primaryExport: { type: Type.STRING }
-      }
+      },
+      required: ["commodities", "wealthGap", "primaryExport"]
     },
     society: {
       type: Type.OBJECT,
@@ -182,12 +186,14 @@ const citySchema = {
             properties: {
               species: { type: Type.STRING },
               percentage: { type: Type.NUMBER }
-            }
+            },
+            required: ["species", "percentage"]
           }
         },
         unrestIndex: { type: Type.NUMBER },
         casteHierarchy: { type: Type.STRING }
-      }
+      },
+      required: ["matrix", "unrestIndex", "casteHierarchy"]
     },
     infrastructure: {
       type: Type.OBJECT,
@@ -203,10 +209,12 @@ const citySchema = {
               name: { type: Type.STRING },
               integrity: { type: Type.NUMBER },
               type: { type: Type.STRING }
-            }
+            },
+            required: ["name", "integrity", "type"]
           }
         }
-      }
+      },
+      required: ["siegeDays", "wallIntegrity", "garrisonReadiness", "defenseNodes"]
     }
   },
   required: ["name", "title", "population", "government", "economy", "magicLevel", "history", "latitude", "longitude", "strategicVitals", "territorialFootprint", "resourceMatrix", "mythicIntel", "districts", "npcs", "rumors", "leylineNodes", "theology", "mercantile", "society", "infrastructure"]
@@ -235,6 +243,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         Provide a detailed archive entry for: ${prompt}.
         Include: Domain Statistics, Arcane Resonance (5 nodes), Theological Record (3 deities), Commerce Ledger (4 items), Societal Structure, and Defense Architecture.
+
+        CRITICAL numeric ranges — all values MUST be within these ranges and non-zero:
+        - magicLevel: 1-10
+        - tradeVolume: 10-100
+        - leylineNodes[].stability: 10-100 (percentage)
+        - leylineNodes[].coordinates: x 10-90, y 10-90 (percentage positions)
+        - theology.faithTension: 10-100
+        - theology.pantheon[].influence: 10-100
+        - theology.pantheon[].heresyLevel: 1-10
+        - mercantile.commodities[].volatility: 1-20 (out of 20)
+        - mercantile.wealthGap: 10-100
+        - society.unrestIndex: 10-100
+        - society.matrix[].percentage: 5-60 (must sum to ~100)
+        - infrastructure.wallIntegrity: 10-100
+        - infrastructure.garrisonReadiness: 10-100
+        - infrastructure.siegeDays: 10-500
+        - infrastructure.defenseNodes[].integrity: 10-100
+
         Output JSON only.`,
         config: {
           responseMimeType: "application/json",

@@ -219,50 +219,72 @@ const App: React.FC = () => {
       <DynamicBackground seed={selectedCity?.name || 'initial'} loading={loading} />
 
       {deleteTarget && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-           <div className="bg-[#121212] w-full max-w-[400px] p-8 border-t-4 border-[#FF2C2C] relative">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4" onClick={() => setDeleteTarget(null)}>
+           <div className="bg-[#121212] w-full max-w-[400px] p-8 border-t-4 border-[#FF2C2C] relative" onClick={e => e.stopPropagation()}>
               <div className="mb-6">
                 <div className="text-[11px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-1">Archive Protocol</div>
                 <div className="six-caps text-6xl text-[#F4F1EA] uppercase leading-tight">Irrevocable Erasure</div>
               </div>
-              <p className="mono text-[11px] text-[#F4F1EA]/70 mb-8 uppercase tracking-tight">Purge "{deleteTarget.name}" from history?</p>
+              <div className="p-3 border border-white/10 bg-white/5 mb-6">
+                <div className="text-[9px] font-black uppercase tracking-[0.3em] text-[#FF2C2C]/50 mono mb-1">
+                  {deleteTarget.type === 'ledger' ? 'Ledger' : 'City Record'}
+                </div>
+                <div className="text-[11px] font-black uppercase text-[#F4F1EA] mono truncate">{deleteTarget.name}</div>
+                {deleteTarget.type === 'ledger' && (
+                  <div className="text-[9px] text-[#F4F1EA]/30 mono mt-1 uppercase">All cities in this ledger will be purged</div>
+                )}
+              </div>
               <div className="space-y-3">
-                 <button onClick={confirmDelete} className="w-full bg-[#FF2C2C] text-white py-3 text-[11px] font-black uppercase mono">Confirm Erasure</button>
-                 <button onClick={() => setDeleteTarget(null)} className="w-full bg-transparent border border-white/20 text-[#F4F1EA]/60 py-3 text-[11px] font-black uppercase mono">Cancel</button>
+                 <button onClick={confirmDelete} className="w-full bg-[#FF2C2C] text-white py-3 text-[11px] font-black uppercase mono hover:bg-white hover:text-[#FF2C2C] transition-colors">Confirm Erasure</button>
+                 <button onClick={() => setDeleteTarget(null)} className="w-full bg-transparent border border-white/20 text-[#F4F1EA]/60 py-3 text-[11px] font-black uppercase mono hover:border-[#F4F1EA]/40 hover:text-[#F4F1EA] transition-colors">Cancel</button>
               </div>
            </div>
         </div>
       )}
 
       {isLedgerModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4">
-          <div className="bg-[#121212] w-full max-w-[360px] p-8 border-t-4 border-[#FF2C2C] relative">
-            <div className="flex justify-between items-start mb-8">
-              <h2 className="six-caps text-7xl text-[#F4F1EA] leading-tight uppercase">New Ledger</h2>
-              <button onClick={() => setIsLedgerModalOpen(false)} className="text-[#FF2C2C] font-black uppercase text-[11px] mono">[ CLOSE ]</button>
-            </div>
-            <form onSubmit={handleAddLedger} className="space-y-6">
-              <input required value={newLedger.name} onChange={e => setNewLedger({...newLedger, name: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 text-[11px] font-bold uppercase text-[#F4F1EA] focus:outline-none focus:border-[#FF2C2C] mono" placeholder="CHRONICLE ID..." />
-              <div className="grid grid-cols-2 gap-4">
-                <input value={newLedger.era} onChange={e => setNewLedger({...newLedger, era: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 text-[11px] font-bold uppercase text-[#F4F1EA] focus:outline-none focus:border-[#FF2C2C] mono" placeholder="4TH ERA" />
-                <input value={newLedger.cycle} onChange={e => setNewLedger({...newLedger, cycle: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 text-[11px] font-bold uppercase text-[#F4F1EA] focus:outline-none focus:border-[#FF2C2C] mono" placeholder="01" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4" onClick={() => setIsLedgerModalOpen(false)}>
+          <div className="bg-[#121212] w-full max-w-[360px] p-8 border-t-4 border-[#FF2C2C] relative" onClick={e => e.stopPropagation()}>
+            <div className="mb-8">
+              <div className="text-[11px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-1">Archive Protocol</div>
+              <div className="flex justify-between items-end">
+                <h2 className="six-caps text-7xl text-[#F4F1EA] leading-tight uppercase">New Ledger</h2>
+                <button onClick={() => setIsLedgerModalOpen(false)} className="text-[#F4F1EA]/30 hover:text-[#FF2C2C] font-black uppercase text-[11px] mono transition-colors pb-1">[ ESC ]</button>
               </div>
-              <button type="submit" className="w-full bg-[#FF2C2C] text-white py-4 text-[11px] font-black uppercase tracking-[0.3em] mono">Authorize Inscription</button>
+            </div>
+            <form onSubmit={handleAddLedger} className="space-y-5">
+              <div>
+                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/30 mono block mb-2">Chronicle Identifier</label>
+                <input required value={newLedger.name} onChange={e => setNewLedger({...newLedger, name: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 text-[11px] font-bold uppercase text-[#F4F1EA] focus:outline-none focus:border-[#FF2C2C] mono transition-colors" placeholder="NORTHERN CAMPAIGNS..." />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/30 mono block mb-2">Era</label>
+                  <input value={newLedger.era} onChange={e => setNewLedger({...newLedger, era: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 text-[11px] font-bold uppercase text-[#F4F1EA] focus:outline-none focus:border-[#FF2C2C] mono transition-colors" placeholder="4TH ERA" />
+                </div>
+                <div>
+                  <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/30 mono block mb-2">Cycle</label>
+                  <input value={newLedger.cycle} onChange={e => setNewLedger({...newLedger, cycle: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 text-[11px] font-bold uppercase text-[#F4F1EA] focus:outline-none focus:border-[#FF2C2C] mono transition-colors" placeholder="01" />
+                </div>
+              </div>
+              <button type="submit" className="w-full bg-[#FF2C2C] text-white py-4 text-[11px] font-black uppercase tracking-[0.3em] mono hover:bg-[#F4F1EA] hover:text-[#121212] transition-colors mt-2">Authorize Inscription</button>
             </form>
           </div>
         </div>
       )}
 
-      <div className="relative max-w-[1120px] w-full">
+      <div className="relative max-w-[1180px] w-full">
         <CustomScrollbar scrollRef={mainScrollRef} visible={!loading} />
 
         <div className="w-full h-[720px] rounded-[24px] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.9)] relative z-10 ring-[8px] ring-[#121212] ring-inset bg-black transform translate-z-0 isolation-auto">
-          <div className="grid grid-cols-[300px_1fr] h-full w-full">
+          <div className="grid grid-cols-[340px_1fr] h-full w-full">
             <aside className="flex flex-col bg-[#121212] relative border-r-2 border-[#121212] overflow-hidden rounded-l-[18px]">
-              <div className="flex-1 bg-[#F4F1EA] flex flex-col pt-14 pb-8 px-8 relative rounded-tl-[18px] overflow-hidden min-h-0">
+              <div className="flex-1 bg-[#F4F1EA] flex flex-col pt-14 pb-8 px-10 relative rounded-tl-[18px] overflow-hidden min-h-0">
                 <Marker position="tl" /> 
                 <header className="mb-0 text-center relative z-10">
-                  <h1 className="six-caps text-[8.5rem] leading-[0.75] font-normal tracking-[-2px] uppercase scale-y-[1.25] text-[#121212] text-center w-full origin-top">CHRONICLE</h1>
+                  <div className="h-[100px]">
+                    <h1 className="six-caps text-[8.5rem] leading-[0.75] font-normal tracking-[-2px] uppercase scale-y-[1.25] text-[#121212] text-center w-full origin-top">CHRONICLE</h1>
+                  </div>
                   <LedgerSelector 
                     ledgers={ledgers} 
                     activeLedger={activeLedger} 
@@ -290,7 +312,7 @@ const App: React.FC = () => {
               <div className={`relative z-40 bg-[#121212] transition-all duration-500 ease-in-out flex flex-col overflow-hidden rounded-bl-[18px] ${isInscriptionExpanded ? 'max-h-[440px]' : 'max-h-[56px]'}`}>
                  <button 
                    onClick={() => setIsInscriptionExpanded(!isInscriptionExpanded)} 
-                   className="w-full flex justify-between items-center py-4 px-8 shrink-0 hover:bg-white/5 transition-colors"
+                   className="w-full flex justify-between items-center py-4 px-10 shrink-0 hover:bg-white/5 transition-colors"
                  >
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full animate-pulse ${loading ? 'bg-yellow-400' : 'bg-[#FF2C2C]'}`} />
@@ -303,7 +325,7 @@ const App: React.FC = () => {
                     </span>
                  </button>
 
-                 <div className={`px-8 py-4 space-y-4 transition-opacity duration-300 ${isInscriptionExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                 <div className={`px-10 py-4 space-y-4 transition-opacity duration-300 ${isInscriptionExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <div className="space-y-2">
                        <div className="text-[10.5px] font-black text-[#FF2C2C] mono uppercase tracking-[0.2em]">Core Directive</div>
                        <textarea 
@@ -358,16 +380,18 @@ const App: React.FC = () => {
               {selectedCity && !loading && (
                 <div className="animate-in fade-in duration-1000">
                   <header className="mb-0 flex justify-between items-start">
-                    <h2 className="six-caps text-[8.5rem] leading-[0.75] font-normal tracking-[-2px] uppercase scale-y-[1.25] text-[#FF2C2C] origin-top-left">
-                      {selectedCity.name}
-                    </h2>
-                    
+                    <div className="h-[100px]">
+                      <h2 className="six-caps text-[8.5rem] leading-[0.75] font-normal tracking-[-2px] uppercase scale-y-[1.25] text-[#FF2C2C] origin-top-left">
+                        {selectedCity.name}
+                      </h2>
+                    </div>
+
                     <div className="text-[11px] uppercase tracking-[0.3rem] font-black text-[#F4F1EA] opacity-40 mono text-right whitespace-nowrap pt-2">
                       SURVEY-ID: {selectedCity.id.slice(0, 8).toUpperCase()}
                     </div>
                   </header>
-                  
-                  <div className="flex justify-between items-center mt-20 border-y border-[#FF2C2C]/40 py-4 px-0">
+
+                  <div className="flex justify-between items-center mt-20 border-y border-[#FF2C2C]/40 py-3 px-0">
                     <p className="text-[11px] font-black uppercase text-[#F4F1EA] mono">{selectedCity.title}</p>
                     <span className="text-[11px] font-bold text-[#F4F1EA] opacity-40 mono">COORD: {cleanCoord(selectedCity.latitude)} / {cleanCoord(selectedCity.longitude)}</span>
                   </div>

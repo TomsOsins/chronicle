@@ -35,12 +35,14 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       </div>
 
       <header className="mb-0 z-10">
-        <h2 className="six-caps text-[8.5rem] leading-[0.75] font-normal tracking-[-2px] uppercase scale-y-[1.25] text-[#FF2C2C] origin-left whitespace-nowrap">
-          RETRIEVING ARCHIVE RECORDS
-        </h2>
+        <div className="h-[100px]">
+          <h2 className="six-caps text-[8.5rem] leading-[0.75] font-normal tracking-[-2px] uppercase scale-y-[1.25] text-[#FF2C2C] origin-top-left">
+            RETRIEVING ARCHIVE RECORDS
+          </h2>
+        </div>
       </header>
 
-      <div ref={loadingListRef} className="flex-1 overflow-y-auto space-y-2 mt-16 pr-4 scroll-smooth z-10 relative scrollbar-hide">
+      <div ref={loadingListRef} className="flex-1 overflow-y-auto space-y-2 mt-20 pr-4 scroll-smooth z-10 relative scrollbar-hide">
         {LEDGER_PROCESSES.map((proc, idx) => {
           const isCompleted = idx < currentProcessIndex;
           const isActive = idx === currentProcessIndex;

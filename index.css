@@ -47,3 +47,34 @@ body {
 .text-ghost { color: var(--color-ghost); }
 .bg-signal { background-color: var(--color-signal); }
 .border-signal { border-color: var(--color-signal); }
+
+/* EVA-inspired animations */
+@keyframes scanDown {
+  0% { top: -2px; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes glitchFlicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.3; transform: translateX(2px); }
+  94% { opacity: 1; transform: translateX(-1px); }
+  95% { opacity: 0.6; }
+  96% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes borderPulse {
+  0%, 100% { border-color: rgba(255, 44, 44, 0.1); }
+  50% { border-color: rgba(255, 44, 44, 0.3); }
+}
+
+@keyframes fillSweep {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.animate-glitch { animation: glitchFlicker 8s ease-in-out infinite; }
+.animate-border-pulse { animation: borderPulse 3s ease-in-out infinite; }
+.animate-fill-sweep { animation: fillSweep 1s ease-out forwards; }

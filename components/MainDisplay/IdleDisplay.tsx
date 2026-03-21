@@ -63,19 +63,6 @@ export const IdleDisplay: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Scanning Sweep Line */}
-      <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-        <div className="w-full h-[2px] bg-[#FF2C2C]/10 absolute animate-[scan_15s_linear_infinite]" />
-      </div>
-
-      <style>{`
-        @keyframes scan {
-          0% { top: -10%; opacity: 0; }
-          10% { opacity: 0.5; }
-          90% { opacity: 0.5; }
-          100% { top: 110%; opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 };

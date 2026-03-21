@@ -1,5 +1,4 @@
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface DynamicBackgroundProps {
   seed?: string;
@@ -38,31 +37,36 @@ class Noise2D {
   }
 }
 
+const GRID_SIZE = 80;
+const LEVELS = 18;
+const CROSS_SIZE = 7;
+
+const getSeedHash = (str: string) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash;
+};
+
 export const DynamicBackground: React.FC<DynamicBackgroundProps> = ({ seed = 'default', loading = false }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number>(0);
-  const [progress, setProgress] = useState(1);
-  
   const loadingRef = useRef(loading);
-  const progressRef = useRef(progress);
+  const loadingStartRef = useRef<number | null>(null);
 
-  useEffect(() => { loadingRef.current = loading; }, [loading]);
-  useEffect(() => { progressRef.current = progress; }, [progress]);
-
-  const GRID_SIZE = 80;
-  const LEVELS = 18;
-
-  const getSeedHash = (str: string) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash << 5) - hash + str.charCodeAt(i);
-      hash |= 0;
+  useEffect(() => {
+    loadingRef.current = loading;
+    if (loading) {
+      loadingStartRef.current = performance.now();
+    } else {
+      loadingStartRef.current = null;
     }
-    return hash;
-  };
+  }, [loading]);
 
-  const preRenderContours = () => {
+  const preRenderContours = (currentSeed: string) => {
     const w = window.innerWidth;
     const h = window.innerHeight;
     const offscreen = document.createElement('canvas');
@@ -71,10 +75,10 @@ export const DynamicBackground: React.FC<DynamicBackgroundProps> = ({ seed = 'de
     const ctx = offscreen.getContext('2d');
     if (!ctx) return;
 
-    const res = 15; 
+    const res = 15;
     const cols = Math.ceil(w / res) + 1;
     const rows = Math.ceil(h / res) + 1;
-    const noiseGen = new Noise2D(getSeedHash(seed));
+    const noiseGen = new Noise2D(getSeedHash(currentSeed));
     const data = new Float32Array(cols * rows);
 
     for (let i = 0; i < rows; i++) {
@@ -87,14 +91,14 @@ export const DynamicBackground: React.FC<DynamicBackgroundProps> = ({ seed = 'de
       }
     }
 
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 0.8;
     for (let l = 1; l <= LEVELS; l++) {
       const threshold = l / (LEVELS + 1);
-      const intensity = Math.floor(30 + (l / LEVELS) * 180);
-      const opacity = (0.05 + (l / LEVELS) * 0.3);
+      const intensity = Math.floor(40 + (l / LEVELS) * 120);
+      const opacity = 0.04 + (l / LEVELS) * 0.12;
       ctx.strokeStyle = `rgba(${intensity}, ${intensity}, ${intensity}, ${opacity})`;
       ctx.beginPath();
-      
+
       for (let i = 0; i < rows - 1; i++) {
         for (let j = 0; j < cols - 1; j++) {
           const x = j * res;
@@ -106,7 +110,7 @@ export const DynamicBackground: React.FC<DynamicBackgroundProps> = ({ seed = 'de
           const config = (b0 << 3) | (b1 << 2) | (b2 << 1) | b3;
           const lerpX = (va: number, vb: number) => (threshold - va) / (vb - va);
           const drawSeg = (x1: number, y1: number, x2: number, y2: number) => { ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); };
-          
+
           const t: [number, number] = [x + res * lerpX(v0, v1), y];
           const r: [number, number] = [x + res, y + res * lerpX(v1, v2)];
           const b: [number, number] = [x + res * lerpX(v3, v2), y + res];
@@ -129,99 +133,114 @@ export const DynamicBackground: React.FC<DynamicBackgroundProps> = ({ seed = 'de
     offscreenCanvasRef.current = offscreen;
   };
 
-  const render = (time: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
+  useEffect(() => {
+    preRenderContours(seed);
 
-    const w = canvas.width = window.innerWidth;
-    const h = canvas.height = window.innerHeight;
-    ctx.fillStyle = '#020204';
-    ctx.fillRect(0, 0, w, h);
+    const render = (time: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) return;
 
-    const isLoading = loadingRef.current;
-    const currentProgress = progressRef.current;
+      const w = canvas.width = window.innerWidth;
+      const h = canvas.height = window.innerHeight;
+      ctx.fillStyle = '#020204';
+      ctx.fillRect(0, 0, w, h);
 
-    // Layer 1: Cached Topography
-    if (offscreenCanvasRef.current) {
-      ctx.save();
-      if (isLoading) {
-        ctx.beginPath();
-        ctx.rect(0, 0, w * currentProgress, h);
-        ctx.clip();
-      }
-      ctx.drawImage(offscreenCanvasRef.current, 0, 0);
-      ctx.restore();
-    }
+      const isLoading = loadingRef.current;
 
-    // Layer 2: Grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let x = 0; x <= w; x += GRID_SIZE) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
-    for (let y = 0; y <= h; y += GRID_SIZE) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
-    ctx.stroke();
+      // Slow pulsating opacity for the topo lines
+      const topoPulse = 0.5 + Math.sin(time * 0.0008) * 0.15;
 
-    // Layer 3: Animated Crosses
-    const cycle = 2000;
-    const anim = (time % cycle) / cycle;
-    let ox = 0, oy = 0, rot = 0;
-    if (isLoading) {
-      if (anim < 0.5) { ox = (anim * 2) * GRID_SIZE; oy = ox; }
-      else { ox = GRID_SIZE; oy = ox; rot = (anim - 0.5) * 2 * Math.PI; }
-    }
-
-    ctx.lineWidth = 1.5;
-    const alpha = isLoading ? 0.35 + Math.sin(time * 0.004) * 0.05 : 0.25;
-    ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-    for (let x = -GRID_SIZE; x <= w + GRID_SIZE; x += GRID_SIZE) {
-      if (isLoading && x > w * currentProgress + GRID_SIZE) continue;
-      for (let y = -GRID_SIZE; y <= h + GRID_SIZE; y += GRID_SIZE) {
+      // Layer 1: Topographic contours — faint, pulsating
+      if (offscreenCanvasRef.current) {
         ctx.save();
-        ctx.translate(x + ox, y + oy);
-        ctx.rotate(rot);
-        ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.moveTo(0, -6); ctx.lineTo(0, 6); ctx.stroke();
+        ctx.globalAlpha = topoPulse;
+
+        if (isLoading && loadingStartRef.current) {
+          // Scan sweep: reveal lines left-to-right during loading
+          const elapsed = time - loadingStartRef.current;
+          const sweepProgress = Math.min(elapsed / 3000, 1);
+          ctx.beginPath();
+          ctx.rect(0, 0, w * sweepProgress, h);
+          ctx.clip();
+        }
+
+        ctx.drawImage(offscreenCanvasRef.current, 0, 0);
         ctx.restore();
       }
-    }
 
-    // Layer 4: Vignette
-    const g = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.8);
-    g.addColorStop(0, 'rgba(0,0,0,0)');
-    g.addColorStop(1, 'rgba(0,0,0,0.85)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, h);
+      // Layer 2: Subtle grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += GRID_SIZE) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+      for (let y = 0; y <= h; y += GRID_SIZE) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+      ctx.stroke();
+
+      // Layer 3: Cross markers at grid intersections
+      const cycle = 3000;
+      const anim = (time % cycle) / cycle;
+
+      if (isLoading) {
+        // Loading state: crosses move diagonally and rotate
+        const diagonalOffset = anim * GRID_SIZE;
+        const rotation = anim * Math.PI * 2;
+        const pulseAlpha = 0.3 + Math.sin(time * 0.006) * 0.1;
+
+        ctx.strokeStyle = `rgba(255, 44, 44, ${pulseAlpha})`;
+        ctx.lineWidth = 2;
+
+        for (let x = -GRID_SIZE; x <= w + GRID_SIZE * 2; x += GRID_SIZE) {
+          for (let y = -GRID_SIZE; y <= h + GRID_SIZE * 2; y += GRID_SIZE) {
+            ctx.save();
+            ctx.translate(x + diagonalOffset, y + diagonalOffset);
+            ctx.rotate(rotation);
+            ctx.beginPath();
+            ctx.moveTo(-CROSS_SIZE, 0); ctx.lineTo(CROSS_SIZE, 0);
+            ctx.moveTo(0, -CROSS_SIZE); ctx.lineTo(0, CROSS_SIZE);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      } else {
+        // Idle state: static crosses, faint pulse
+        const idlePulse = 0.08 + Math.sin(time * 0.001) * 0.04;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${idlePulse})`;
+        ctx.lineWidth = 1.5;
+
+        for (let x = 0; x <= w; x += GRID_SIZE) {
+          for (let y = 0; y <= h; y += GRID_SIZE) {
+            ctx.beginPath();
+            ctx.moveTo(x - CROSS_SIZE, y); ctx.lineTo(x + CROSS_SIZE, y);
+            ctx.moveTo(x, y - CROSS_SIZE); ctx.lineTo(x, y + CROSS_SIZE);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Layer 4: Vignette
+      const g = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) * 0.8);
+      g.addColorStop(0, 'rgba(0,0,0,0)');
+      g.addColorStop(1, 'rgba(0,0,0,0.85)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      animationRef.current = requestAnimationFrame(render);
+    };
 
     animationRef.current = requestAnimationFrame(render);
-  };
 
-  useEffect(() => {
-    preRenderContours();
-    if (!animationRef.current) animationRef.current = requestAnimationFrame(render);
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+    };
   }, [seed]);
 
   useEffect(() => {
-    if (loading) {
-      let start: number | null = null;
-      const animateProgress = (t: number) => {
-        if (!start) start = t;
-        const p = Math.min((t - start) / 2500, 1);
-        setProgress(p);
-        if (p < 1) requestAnimationFrame(animateProgress);
-      };
-      requestAnimationFrame(animateProgress);
-    } else { setProgress(1); }
-  }, [loading]);
-
-  useEffect(() => {
-    const handleResize = () => preRenderContours();
+    const handleResize = () => preRenderContours(seed);
     window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationRef.current);
-    };
-  }, []);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [seed]);
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none bg-[#020204]">
