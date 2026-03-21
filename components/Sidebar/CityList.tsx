@@ -9,6 +9,7 @@ interface CityListProps {
   loading: boolean;
   onSelectCity: (id: string | null) => void;
   onSetViewMode: (mode: ViewMode) => void;
+  onDeleteCity?: (city: CityData) => void;
 }
 
 export const CityList: React.FC<CityListProps> = ({
@@ -17,7 +18,8 @@ export const CityList: React.FC<CityListProps> = ({
   viewMode,
   loading,
   onSelectCity,
-  onSetViewMode
+  onSetViewMode,
+  onDeleteCity
 }) => {
   if (selectedCityId) {
     return (
@@ -59,8 +61,8 @@ export const CityList: React.FC<CityListProps> = ({
           onClick={() => onSelectCity(city.id)}
           className={`group relative py-4 px-4 cursor-pointer transition-all border-l-2 ${selectedCityId === city.id ? 'bg-[#FF2C2C]/10 border-[#FF2C2C]' : 'border-transparent hover:bg-white/60 hover:border-[#FF2C2C]/30'}`}
         >
-          <div className="flex items-start gap-4">
-            <span className="text-[11px] font-black text-[#FF2C2C] mt-1 opacity-40 mono">
+          <div className="flex items-center gap-4">
+            <span className="text-[11px] font-black text-[#FF2C2C] opacity-40 mono">
               {String(index + 1).padStart(2, '0')}
             </span>
             <div className="flex-1 min-w-0 pr-8">
@@ -68,6 +70,15 @@ export const CityList: React.FC<CityListProps> = ({
               <div className="text-[11px] text-[#121212] opacity-50 uppercase font-bold mt-1 truncate mono">{city.title}</div>
             </div>
           </div>
+          {onDeleteCity && (
+            <button
+              onClick={e => { e.stopPropagation(); onDeleteCity(city); }}
+              className="absolute top-3 right-3 w-5 h-5 flex items-center justify-center text-[10px] font-black text-[#FF2C2C]/0 group-hover:text-[#FF2C2C]/40 hover:!text-[#FF2C2C] transition-colors mono"
+              title="Delete city"
+            >
+              ×
+            </button>
+          )}
         </div>
       ))}
     </div>

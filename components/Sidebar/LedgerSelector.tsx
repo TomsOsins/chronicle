@@ -42,17 +42,15 @@ export const LedgerSelector: React.FC<LedgerSelectorProps> = ({
         onClick={() => !loading && onToggle()}
         className="flex justify-between items-center cursor-pointer px-0"
       >
-        <div className="flex-1 truncate text-left">
-          <span className="text-[12px] font-black uppercase tracking-widest text-[#FF2C2C] block mono">
+        <div className="flex-1 min-w-0 text-left truncate">
+          <span className="text-[11px] font-black uppercase tracking-[0.15em] text-[#FF2C2C] mono">
             {activeLedger ? activeLedger.name : 'NO ACTIVE LEDGER'}
           </span>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-[11px] font-bold uppercase text-[#121212] opacity-75 mono">
+          <span className="text-[10px] font-bold uppercase text-[#121212] mono ml-2">
             {activeLedger ? `${activeLedger.era} // C${activeLedger.cycle}` : 'INIT'}
           </span>
-          <span className={`text-[11px] transition-transform duration-300 transform opacity-60 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
         </div>
+        <span className={`text-[11px] text-[#121212] transition-transform duration-300 transform shrink-0 ml-2 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
       </div>
 
       {isOpen && (

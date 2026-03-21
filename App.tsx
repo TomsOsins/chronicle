@@ -12,11 +12,11 @@ import { generateCity } from './services/geminiService';
 import { CityData, ViewMode, Ledger } from './types';
 import { CityWizard } from './components/CityWizard/CityWizard';
 import { TooltipProvider } from './components/Tooltip/TooltipProvider';
-import { 
-  RANDOM_PROMPTS, 
-  LEDGER_PROCESSES, 
-  STORAGE_KEYS, 
-  DEFAULT_CITY 
+import {
+  RANDOM_PROMPTS,
+  LEDGER_PROCESSES,
+  STORAGE_KEYS,
+  DEFAULT_CITY
 } from './constants';
 
 import { LedgerSelector } from './components/Sidebar/LedgerSelector';
@@ -24,6 +24,18 @@ import { CityList } from './components/Sidebar/CityList';
 import { LoadingOverlay } from './components/MainDisplay/LoadingOverlay';
 import { GeopoliticalView } from './components/MainDisplay/GeopoliticalView';
 import { IdleDisplay } from './components/MainDisplay/IdleDisplay';
+import { useAuth } from './contexts/AuthContext';
+import { AuthGate } from './components/Auth/AuthGate';
+import {
+  fetchLedgers as sbFetchLedgers,
+  fetchCities as sbFetchCities,
+  upsertLedger as sbUpsertLedger,
+  upsertCity as sbUpsertCity,
+  deleteCity as sbDeleteCity,
+  deleteLedger as sbDeleteLedger,
+  batchUpsertLedgers,
+  batchUpsertCities,
+} from './services/supabaseData';
 
 const CustomScrollbar: React.FC<{ scrollRef: React.RefObject<HTMLElement | null>, visible: boolean }> = ({ scrollRef, visible }) => {
   const thumbRef = useRef<HTMLDivElement>(null);
@@ -74,46 +86,29 @@ const CustomScrollbar: React.FC<{ scrollRef: React.RefObject<HTMLElement | null>
   );
 };
 
+const DEFAULT_LEDGER: Ledger = { id: 'genesis-001', name: 'GENESIS CHRONICLE', era: '1ST ERA', cycle: '01' };
+
 const App: React.FC = () => {
+  const { user, loading: authLoading, signOut } = useAuth();
+
   const [loading, setLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GEOPOLITICAL);
   const [currentProcessIndex, setCurrentProcessIndex] = useState(0);
   const [overallProgress, setOverallProgress] = useState(0);
   const [isInscriptionExpanded, setIsInscriptionExpanded] = useState(true);
-  const [inputPrompt, setInputPrompt] = useState(() => 
+  const [inputPrompt, setInputPrompt] = useState(() =>
     RANDOM_PROMPTS[Math.floor(Math.random() * RANDOM_PROMPTS.length)]
   );
-  
+
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'city' | 'ledger', id: string, name: string } | null>(null);
+  const [showMigration, setShowMigration] = useState(false);
+  const [migrating, setMigrating] = useState(false);
 
-  const [ledgers, setLedgers] = useState<Ledger[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.LEDGERS);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {}
-    return [{ id: 'genesis-001', name: 'GENESIS CHRONICLE', era: '1ST ERA', cycle: '01' }];
-  });
+  const [ledgers, setLedgers] = useState<Ledger[]>([DEFAULT_LEDGER]);
+  const [activeLedgerId, setActiveLedgerId] = useState<string | null>(DEFAULT_LEDGER.id);
+  const [savedCities, setSavedCities] = useState<CityData[]>([DEFAULT_CITY]);
 
-  const [activeLedgerId, setActiveLedgerId] = useState<string | null>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_LEDGER);
-    if (saved && ledgers.some(l => l.id === saved)) return saved;
-    return (ledgers.length > 0 ? ledgers[0].id : null);
-  });
-  
-  const [savedCities, setSavedCities] = useState<CityData[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.CITIES);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {}
-    return [DEFAULT_CITY];
-  });
-  
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [isLedgerModalOpen, setIsLedgerModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -127,9 +122,65 @@ const App: React.FC = () => {
 
   const mainScrollRef = useRef<HTMLElement>(null);
 
+  // Load data from Supabase when user authenticates
+  useEffect(() => {
+    if (!user) { setDataLoaded(false); return; }
+
+    const loadData = async () => {
+      const [sbLedgers, sbCities] = await Promise.all([sbFetchLedgers(), sbFetchCities()]);
+
+      if (sbLedgers.length > 0 || sbCities.length > 0) {
+        // User has cloud data — use it
+        setLedgers(sbLedgers.length > 0 ? sbLedgers : [DEFAULT_LEDGER]);
+        setSavedCities(sbCities);
+        setActiveLedgerId(sbLedgers.length > 0 ? sbLedgers[0].id : DEFAULT_LEDGER.id);
+      } else {
+        // No cloud data — check if localStorage has data to migrate
+        try {
+          const localLedgers = JSON.parse(localStorage.getItem(STORAGE_KEYS.LEDGERS) || '[]');
+          const localCities = JSON.parse(localStorage.getItem(STORAGE_KEYS.CITIES) || '[]');
+          if ((localLedgers.length > 0 && localLedgers[0].id !== 'genesis-001') || localCities.length > 1 || (localCities.length === 1 && localCities[0].id !== 'default-test-city-001')) {
+            // Non-default local data exists — offer migration
+            setLedgers(localLedgers.length > 0 ? localLedgers : [DEFAULT_LEDGER]);
+            setSavedCities(localCities.length > 0 ? localCities : [DEFAULT_CITY]);
+            setActiveLedgerId(localLedgers.length > 0 ? localLedgers[0].id : DEFAULT_LEDGER.id);
+            setShowMigration(true);
+          } else {
+            // Fresh account, no meaningful local data
+            setLedgers([DEFAULT_LEDGER]);
+            setSavedCities([DEFAULT_CITY]);
+            setActiveLedgerId(DEFAULT_LEDGER.id);
+            // Seed default ledger to Supabase
+            sbUpsertLedger(DEFAULT_LEDGER, user.id);
+            sbUpsertCity(DEFAULT_CITY, user.id);
+          }
+        } catch {
+          setLedgers([DEFAULT_LEDGER]);
+          setSavedCities([DEFAULT_CITY]);
+          setActiveLedgerId(DEFAULT_LEDGER.id);
+        }
+      }
+      setDataLoaded(true);
+    };
+
+    loadData();
+  }, [user]);
+
+  // Migration handler
+  const handleMigration = async (doMigrate: boolean) => {
+    if (doMigrate && user) {
+      setMigrating(true);
+      await batchUpsertLedgers(ledgers, user.id);
+      await batchUpsertCities(savedCities, user.id);
+      setMigrating(false);
+    }
+    setShowMigration(false);
+  };
+
+  // Cache to localStorage
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEDGERS, JSON.stringify(ledgers)); }, [ledgers]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.CITIES, JSON.stringify(savedCities)); }, [savedCities]);
-  useEffect(() => { 
+  useEffect(() => {
     if (activeLedgerId) localStorage.setItem(STORAGE_KEYS.ACTIVE_LEDGER, activeLedgerId);
   }, [activeLedgerId]);
 
@@ -170,6 +221,7 @@ const App: React.FC = () => {
           setViewMode(ViewMode.GEOPOLITICAL);
           setLoading(false);
           clearInterval(progressIntervalRef.current!);
+          if (user) sbUpsertCity(newCity, user.id);
         }
       }
       setOverallProgress(Math.floor(progress));
@@ -198,6 +250,7 @@ const App: React.FC = () => {
     setActiveLedgerId(ledger.id);
     setIsLedgerModalOpen(false);
     setNewLedger({ name: '', era: '', cycle: '' });
+    if (user) sbUpsertLedger(ledger, user.id);
   };
 
   const confirmDelete = () => {
@@ -205,6 +258,7 @@ const App: React.FC = () => {
     if (deleteTarget.type === 'city') {
       setSavedCities(prev => prev.filter(c => c.id !== deleteTarget.id));
       if (selectedCityId === deleteTarget.id) setSelectedCityId(null);
+      if (user) sbDeleteCity(deleteTarget.id);
     } else if (deleteTarget.type === 'ledger') {
       const remainingLedgers = ledgers.filter(l => l.id !== deleteTarget.id);
       setLedgers(remainingLedgers);
@@ -213,18 +267,25 @@ const App: React.FC = () => {
         setActiveLedgerId(remainingLedgers.length > 0 ? remainingLedgers[0].id : null);
         setSelectedCityId(null);
       }
+      if (user) sbDeleteLedger(deleteTarget.id);
     }
     setDeleteTarget(null);
   };
 
   const handleWizardSave = (cityData: Omit<CityData, 'id' | 'ledgerId'>) => {
     if (editingCityId) {
-      setSavedCities(prev => prev.map(c => c.id === editingCityId ? { ...cityData, id: c.id, ledgerId: c.ledgerId } as CityData : c));
+      const existing = savedCities.find(c => c.id === editingCityId);
+      if (existing) {
+        const updated = { ...cityData, id: existing.id, ledgerId: existing.ledgerId } as CityData;
+        setSavedCities(prev => prev.map(c => c.id === editingCityId ? updated : c));
+        if (user) sbUpsertCity(updated, user.id);
+      }
     } else {
       if (!activeLedger) return;
       const newCity: CityData = { ...cityData, id: crypto.randomUUID(), ledgerId: activeLedger.id } as CityData;
       setSavedCities(prev => [...prev, newCity]);
       setSelectedCityId(newCity.id);
+      if (user) sbUpsertCity(newCity, user.id);
     }
     setViewMode(ViewMode.GEOPOLITICAL);
     setIsWizardOpen(false);
@@ -238,10 +299,68 @@ const App: React.FC = () => {
 
   const cleanCoord = (coord: string) => coord.split(' (')[0];
 
+  // Auth gate
+  if (authLoading) {
+    return (
+      <div className="fixed inset-0 bg-[#0A0A0A] flex items-center justify-center">
+        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C]/60 mono animate-pulse">
+          Authenticating...
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return <AuthGate />;
+
+  if (!dataLoaded) {
+    return (
+      <div className="fixed inset-0 bg-[#0A0A0A] flex items-center justify-center">
+        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C]/60 mono animate-pulse">
+          Loading Archives...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <TooltipProvider>
       <div className="w-screen h-screen flex items-center justify-center p-4 relative overflow-hidden inter">
       <DynamicBackground seed={selectedCity?.name || 'initial'} loading={loading} />
+
+      {/* Migration Prompt */}
+      {showMigration && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4" onClick={() => handleMigration(false)}>
+          <div className="bg-[#121212] w-full max-w-[400px] p-8 border-t-4 border-[#FF2C2C] relative" onClick={e => e.stopPropagation()}>
+            <div className="mb-6">
+              <div className="text-[12px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-1">Archive Protocol</div>
+              <div className="six-caps text-6xl text-[#F4F1EA] uppercase leading-tight">Local Data Found</div>
+            </div>
+            <div className="p-3 border border-white/10 bg-white/5 mb-6">
+              <div className="text-[10px] font-bold text-[#F4F1EA]/70 mono uppercase">
+                {ledgers.length} ledger{ledgers.length !== 1 ? 's' : ''} and {savedCities.length} cit{savedCities.length !== 1 ? 'ies' : 'y'} detected in local storage.
+              </div>
+              <div className="text-[10px] text-[#F4F1EA]/50 mono mt-2">
+                Import this data to your cloud account?
+              </div>
+            </div>
+            <div className="space-y-3">
+              <button
+                onClick={() => handleMigration(true)}
+                disabled={migrating}
+                className="w-full bg-[#FF2C2C] text-white py-3 text-[12px] font-black uppercase mono hover:bg-white hover:text-[#FF2C2C] transition-colors disabled:opacity-40"
+              >
+                {migrating ? 'Syncing...' : 'Import to Cloud'}
+              </button>
+              <button
+                onClick={() => handleMigration(false)}
+                className="w-full bg-transparent border border-white/20 text-[#F4F1EA]/70 py-3 text-[12px] font-black uppercase mono hover:border-[#F4F1EA]/40 hover:text-[#F4F1EA] transition-colors"
+              >
+                Skip
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {deleteTarget && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4" onClick={() => setDeleteTarget(null)}>
@@ -280,10 +399,8 @@ const App: React.FC = () => {
           <div className="bg-[#121212] w-full max-w-[360px] p-8 border-t-4 border-[#FF2C2C] relative" onClick={e => e.stopPropagation()}>
             <div className="mb-8">
               <div className="text-[12px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-1">Archive Protocol</div>
-              <div className="flex justify-between items-end">
-                <h2 className="six-caps text-7xl text-[#F4F1EA] leading-tight uppercase">New Ledger</h2>
-                <button onClick={() => setIsLedgerModalOpen(false)} className="text-[#F4F1EA]/50 hover:text-[#FF2C2C] font-black uppercase text-[12px] mono transition-colors pb-1">[ ESC ]</button>
-              </div>
+              <button onClick={() => setIsLedgerModalOpen(false)} className="absolute top-4 right-4 text-[#F4F1EA]/50 hover:text-[#FF2C2C] font-black uppercase text-[12px] mono transition-colors">[ ESC ]</button>
+              <h2 className="six-caps text-7xl text-[#F4F1EA] leading-tight uppercase">New Ledger</h2>
             </div>
             <form onSubmit={handleAddLedger} className="space-y-5">
               <div>
@@ -309,6 +426,15 @@ const App: React.FC = () => {
       <div className="relative max-w-[1180px] w-full">
         <CustomScrollbar scrollRef={mainScrollRef} visible={!loading} />
 
+        <div className="flex justify-end mb-2 pr-1">
+          <button
+            onClick={signOut}
+            className="text-[9px] font-black uppercase tracking-[0.2em] text-[#FF2C2C]/70 hover:text-[#FF2C2C] mono transition-colors"
+          >
+            [ sign out ]
+          </button>
+        </div>
+
         <div className="w-full h-[720px] rounded-[24px] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.9)] relative z-10 ring-[8px] ring-[#121212] ring-inset bg-black transform translate-z-0 isolation-auto">
           <div className="grid grid-cols-[340px_1fr] h-full w-full">
             <aside className="flex flex-col bg-[#121212] relative border-r-2 border-[#121212] overflow-hidden rounded-l-[18px]">
@@ -331,13 +457,14 @@ const App: React.FC = () => {
                 </header>
 
                 <div className="flex-1 overflow-y-auto mt-6 pr-2 relative z-0 scroll-smooth scrollbar-hide">
-                  <CityList 
+                  <CityList
                     cities={chartedCitiesInLedger}
                     selectedCityId={selectedCityId}
                     viewMode={viewMode}
                     loading={loading}
                     onSelectCity={setSelectedCityId}
                     onSetViewMode={setViewMode}
+                    onDeleteCity={(city) => setDeleteTarget({ type: 'city', id: city.id, name: city.name })}
                   />
                 </div>
               </div>
