@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Marker } from './components/Marker';
 import { DynamicBackground } from './components/DynamicBackground';
 import { LeylineMap } from './components/LeylineMap';
@@ -410,6 +411,7 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };
