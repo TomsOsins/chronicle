@@ -40,24 +40,16 @@ export const TipLabel: React.FC<{
       onMouseLeave={() => { setHovered(false); hide(); }}
     >
       {children}
-      <svg width="12" height="12" viewBox="0 0 12 12" style={{ display: 'inline', verticalAlign: 'middle', flexShrink: 0 }}>
-        <circle
-          cx="6" cy="6" r="5.5"
-          fill="none"
-          stroke={hovered ? 'rgba(255,44,44,0.7)' : 'rgba(255,44,44,0.3)'}
-          strokeWidth="1"
-          style={{ transition: 'stroke 0.15s' }}
-        />
-        <text
-          x="6" y="6"
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill={hovered ? 'rgba(255,44,44,0.8)' : 'rgba(255,44,44,0.4)'}
-          fontSize="7"
-          fontFamily="JetBrains Mono, monospace"
-          style={{ transition: 'fill 0.15s' }}
-        >?</text>
-      </svg>
+      <span
+        style={{
+          fontSize: '10px',
+          fontWeight: 900,
+          color: hovered ? 'rgba(255,44,44,0.8)' : 'rgba(255,44,44,0.4)',
+          transition: 'color 0.15s',
+          lineHeight: 1,
+          flexShrink: 0,
+        }}
+      >?</span>
     </span>
   );
 };
