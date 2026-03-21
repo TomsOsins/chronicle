@@ -7,7 +7,7 @@ interface LeylineMapProps {
   magicLevel: number;
 }
 
-export const LeylineMap: React.FC<LeylineMapProps> = ({ nodes, magicLevel }) => {
+export const LeylineMap: React.FC<LeylineMapProps> = React.memo(({ nodes, magicLevel }) => {
   return (
     <div className="h-full flex flex-col relative">
 
@@ -103,4 +103,4 @@ export const LeylineMap: React.FC<LeylineMapProps> = ({ nodes, magicLevel }) => 
       </div>
     </div>
   );
-};
+});

@@ -17,7 +17,7 @@ const TrendArrow: React.FC<{ trend: string }> = ({ trend }) => {
   return <span className={`text-[11px] font-black mono ${color}`}>{symbol}</span>;
 };
 
-export const MercantileFlux: React.FC<MercantileFluxProps> = ({ mercantile }) => {
+export const MercantileFlux: React.FC<MercantileFluxProps> = React.memo(({ mercantile }) => {
   const { commodities, wealthGap, primaryExport } = mercantile;
 
   return (
@@ -82,4 +82,4 @@ export const MercantileFlux: React.FC<MercantileFluxProps> = ({ mercantile }) =>
       </StaggeredItem>
     </div>
   );
-};
+});

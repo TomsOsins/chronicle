@@ -10,7 +10,7 @@ interface DataPanelProps {
   delay?: number;
 }
 
-export const DataPanel: React.FC<DataPanelProps> = ({ label, labelTermKey, value, chartHeights, color = 'bg-[#FF2C2C]', delay = 0 }) => {
+export const DataPanel: React.FC<DataPanelProps> = React.memo(({ label, labelTermKey, value, chartHeights, color = 'bg-[#FF2C2C]', delay = 0 }) => {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
@@ -41,4 +41,4 @@ export const DataPanel: React.FC<DataPanelProps> = ({ label, labelTermKey, value
       </div>
     </div>
   );
-};
+});

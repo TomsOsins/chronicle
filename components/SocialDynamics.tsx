@@ -84,7 +84,7 @@ const PieChart: React.FC<{ data: { label: string; value: number }[]; size?: numb
   );
 };
 
-export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
+export const SocialDynamics: React.FC<SocialDynamicsProps> = React.memo(({ society }) => {
   const { matrix, unrestIndex, casteHierarchy } = society;
 
   return (
@@ -147,4 +147,4 @@ export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
       </StaggeredItem>
     </div>
   );
-};
+});

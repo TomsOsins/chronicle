@@ -7,7 +7,7 @@ interface LoadingOverlayProps {
   overallProgress: number;
 }
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = React.memo(({
   currentProcessIndex,
   overallProgress
 }) => {
@@ -94,4 +94,4 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       `}</style>
     </div>
   );
-};
+});

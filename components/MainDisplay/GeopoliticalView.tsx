@@ -29,7 +29,7 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
   );
 };
 
-export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
+export const GeopoliticalView: React.FC<GeopoliticalViewProps> = React.memo(({ city }) => {
   const { strategicVitals, territorialFootprint, resourceMatrix, mythicIntel } = city;
 
   return (
@@ -243,4 +243,4 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       </StaggeredItem>
     </div>
   );
-};
+});

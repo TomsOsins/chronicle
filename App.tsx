@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Marker } from './components/Marker';
 import { DynamicBackground } from './components/DynamicBackground';
 import { LeylineMap } from './components/LeylineMap';
@@ -7,7 +7,7 @@ import { DivineSynchron } from './components/DivineSynchron';
 import { MercantileFlux } from './components/MercantileFlux';
 import { SocialDynamics } from './components/SocialDynamics';
 import { SteelGrid } from './components/SteelGrid';
-import { AbyssalTelemetry } from './components/AbyssalTelemetry';
+const AbyssalTelemetry = React.lazy(() => import('./components/AbyssalTelemetry').then(m => ({ default: m.AbyssalTelemetry })));
 import { generateCity } from './services/geminiService';
 import { CityData, ViewMode, Ledger } from './types';
 import { CityWizard } from './components/CityWizard/CityWizard';
@@ -180,15 +180,17 @@ const App: React.FC = () => {
     setShowMigration(false);
   };
 
-  // Cache to localStorage
-  useEffect(() => { localStorage.setItem(STORAGE_KEYS.LEDGERS, JSON.stringify(ledgers)); }, [ledgers]);
-  useEffect(() => { localStorage.setItem(STORAGE_KEYS.CITIES, JSON.stringify(savedCities)); }, [savedCities]);
+  // Cache to localStorage (consolidated single write)
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.LEDGERS, JSON.stringify(ledgers));
+    localStorage.setItem(STORAGE_KEYS.CITIES, JSON.stringify(savedCities));
     if (activeLedgerId) localStorage.setItem(STORAGE_KEYS.ACTIVE_LEDGER, activeLedgerId);
-  }, [activeLedgerId]);
+  }, [ledgers, savedCities, activeLedgerId]);
 
+  const hasSelectedCityOnce = useRef(false);
   useEffect(() => {
-    if (!loading) setIsInscriptionExpanded(selectedCityId === null);
+    if (selectedCityId) hasSelectedCityOnce.current = true;
+    if (!loading && hasSelectedCityOnce.current) setIsInscriptionExpanded(selectedCityId === null);
   }, [selectedCityId, loading]);
 
   const cityDataRef = useRef<CityData | null>(null);
@@ -275,7 +277,7 @@ const App: React.FC = () => {
     setDeleteTarget(null);
   };
 
-  const handleWizardSave = (cityData: Omit<CityData, 'id' | 'ledgerId'>) => {
+  const handleWizardSave = useCallback((cityData: Omit<CityData, 'id' | 'ledgerId'>) => {
     if (editingCityId) {
       const existing = savedCities.find(c => c.id === editingCityId);
       if (existing) {
@@ -293,14 +295,21 @@ const App: React.FC = () => {
     setViewMode(ViewMode.GEOPOLITICAL);
     setIsWizardOpen(false);
     setEditingCityId(null);
-  };
+  }, [editingCityId, savedCities, activeLedger, user]);
 
-  const handleWizardClose = () => {
+  const handleWizardClose = useCallback(() => {
     setIsWizardOpen(false);
     setEditingCityId(null);
-  };
+  }, []);
 
   const cleanCoord = (coord: string) => coord.split(' (')[0];
+
+  const handleToggleDropdown = useCallback(() => setIsDropdownOpen(prev => !prev), []);
+  const handleSelectLedger = useCallback((id: string) => { setActiveLedgerId(id); setSelectedCityId(null); setIsDropdownOpen(false); }, []);
+  const handleNewLedger = useCallback(() => { setIsLedgerModalOpen(true); setIsDropdownOpen(false); }, []);
+  const handleDeleteLedger = useCallback((l: Ledger) => setDeleteTarget({ type: 'ledger', id: l.id, name: l.name }), []);
+  const handleDeleteCity = useCallback((city: CityData) => setDeleteTarget({ type: 'city', id: city.id, name: city.name }), []);
+  const handleToggleInscription = useCallback(() => setIsInscriptionExpanded(prev => !prev), []);
 
   // Auth gate
   if (authLoading) {
@@ -452,10 +461,10 @@ const App: React.FC = () => {
                     activeLedger={activeLedger} 
                     isOpen={isDropdownOpen}
                     loading={loading}
-                    onToggle={() => setIsDropdownOpen(!isDropdownOpen)}
-                    onSelect={(id) => { setActiveLedgerId(id); setSelectedCityId(null); setIsDropdownOpen(false); }}
-                    onNew={() => { setIsLedgerModalOpen(true); setIsDropdownOpen(false); }}
-                    onDelete={(l) => setDeleteTarget({ type: 'ledger', id: l.id, name: l.name })}
+                    onToggle={handleToggleDropdown}
+                    onSelect={handleSelectLedger}
+                    onNew={handleNewLedger}
+                    onDelete={handleDeleteLedger}
                   />
                 </header>
 
@@ -467,14 +476,14 @@ const App: React.FC = () => {
                     loading={loading}
                     onSelectCity={setSelectedCityId}
                     onSetViewMode={setViewMode}
-                    onDeleteCity={(city) => setDeleteTarget({ type: 'city', id: city.id, name: city.name })}
+                    onDeleteCity={handleDeleteCity}
                   />
                 </div>
               </div>
 
               <div className={`relative z-40 bg-[#121212] transition-all duration-500 ease-in-out flex flex-col overflow-hidden rounded-bl-[18px] ${isInscriptionExpanded ? 'max-h-[440px]' : 'max-h-[56px] animate-inscription-pulse'}`}>
                  <button 
-                   onClick={() => setIsInscriptionExpanded(!isInscriptionExpanded)} 
+                   onClick={handleToggleInscription}
                    className="w-full flex justify-between items-center py-4 px-10 shrink-0 hover:bg-white/5 transition-colors"
                  >
                     <div className="flex items-center gap-3">
@@ -581,7 +590,7 @@ const App: React.FC = () => {
                     {viewMode === ViewMode.ECONOMY && <MercantileFlux mercantile={selectedCity.mercantile} />}
                     {viewMode === ViewMode.SOCIETY && <SocialDynamics society={selectedCity.society} />}
                     {viewMode === ViewMode.STEEL && <SteelGrid infrastructure={selectedCity.infrastructure} />}
-                    {viewMode === ViewMode.TELEMETRY && <div className="h-[550px]"><AbyssalTelemetry /></div>}
+                    {viewMode === ViewMode.TELEMETRY && <div className="h-[550px]"><React.Suspense fallback={<div className="flex items-center justify-center h-full text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C]/60 mono animate-pulse">Loading Telemetry...</div>}><AbyssalTelemetry /></React.Suspense></div>}
                   </div>
                 </div>
               )}

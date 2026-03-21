@@ -8,7 +8,7 @@ interface SteelGridProps {
   infrastructure: CityData['infrastructure'];
 }
 
-export const SteelGrid: React.FC<SteelGridProps> = ({ infrastructure }) => {
+export const SteelGrid: React.FC<SteelGridProps> = React.memo(({ infrastructure }) => {
   const { siegeDays, wallIntegrity, garrisonReadiness, defenseNodes } = infrastructure;
 
   return (
@@ -51,4 +51,4 @@ export const SteelGrid: React.FC<SteelGridProps> = ({ infrastructure }) => {
       </StaggeredItem>
     </div>
   );
-};
+});

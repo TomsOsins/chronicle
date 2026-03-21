@@ -12,7 +12,7 @@ interface LedgerSelectorProps {
   onDelete: (ledger: Ledger) => void;
 }
 
-export const LedgerSelector: React.FC<LedgerSelectorProps> = ({
+export const LedgerSelector: React.FC<LedgerSelectorProps> = React.memo(({
   ledgers,
   activeLedger,
   isOpen,
@@ -98,4 +98,4 @@ export const LedgerSelector: React.FC<LedgerSelectorProps> = ({
       )}
     </div>
   );
-};
+});

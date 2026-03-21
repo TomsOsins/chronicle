@@ -6,7 +6,7 @@ export const AnimatedNumber: React.FC<{
   duration?: number;
   suffix?: string;
   className?: string;
-}> = ({ value, duration = 1200, suffix = '', className = '' }) => {
+}> = React.memo(({ value, duration = 1200, suffix = '', className = '' }) => {
   const [display, setDisplay] = useState(0);
   const startRef = useRef<number | null>(null);
   const frameRef = useRef<number>(0);
@@ -27,7 +27,7 @@ export const AnimatedNumber: React.FC<{
   }, [safeValue, duration]);
 
   return <span className={className}>{display}{suffix}</span>;
-};
+});
 
 // Bar that fills from 0 on mount
 export const AnimatedBar: React.FC<{
@@ -37,7 +37,7 @@ export const AnimatedBar: React.FC<{
   colorHex?: string;
   height?: string;
   delay?: number;
-}> = ({ value, max = 100, color, colorHex, height = 'h-2', delay = 0 }) => {
+}> = React.memo(({ value, max = 100, color, colorHex, height = 'h-2', delay = 0 }) => {
   const [width, setWidth] = useState(0);
   const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
   const pct = (safeValue / max) * 100;
@@ -56,7 +56,7 @@ export const AnimatedBar: React.FC<{
       />
     </div>
   );
-};
+});
 
 // Scan line effect
 export const ScanLine: React.FC<{ className?: string }> = ({ className = '' }) => (
@@ -73,7 +73,7 @@ export const StaggeredItem: React.FC<{
   index: number;
   children: React.ReactNode;
   className?: string;
-}> = ({ index, children, className = '' }) => {
+}> = React.memo(({ index, children, className = '' }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -83,9 +83,9 @@ export const StaggeredItem: React.FC<{
 
   return (
     <div
-      className={`transition-all duration-500 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'} ${className}`}
+      className={`transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'} ${className}`}
     >
       {children}
     </div>
   );
-};
+});

@@ -12,7 +12,7 @@ interface CityListProps {
   onDeleteCity?: (city: CityData) => void;
 }
 
-export const CityList: React.FC<CityListProps> = ({
+export const CityList: React.FC<CityListProps> = React.memo(({
   cities,
   selectedCityId,
   viewMode,
@@ -83,4 +83,4 @@ export const CityList: React.FC<CityListProps> = ({
       ))}
     </div>
   );
-};
+});

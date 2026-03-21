@@ -7,7 +7,7 @@ interface DivineSynchronProps {
   theology: CityData['theology'];
 }
 
-export const DivineSynchron: React.FC<DivineSynchronProps> = ({ theology }) => {
+export const DivineSynchron: React.FC<DivineSynchronProps> = React.memo(({ theology }) => {
   const { pantheon, faithTension, miracleFrequency } = theology;
 
   return (
@@ -77,4 +77,4 @@ export const DivineSynchron: React.FC<DivineSynchronProps> = ({ theology }) => {
       </StaggeredItem>
     </div>
   );
-};
+});
