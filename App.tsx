@@ -10,6 +10,8 @@ import { SteelGrid } from './components/SteelGrid';
 import { AbyssalTelemetry } from './components/AbyssalTelemetry';
 import { generateCity } from './services/geminiService';
 import { CityData, ViewMode, Ledger } from './types';
+import { CityWizard } from './components/CityWizard/CityWizard';
+import { TooltipProvider } from './components/Tooltip/TooltipProvider';
 import { 
   RANDOM_PROMPTS, 
   LEDGER_PROCESSES, 
@@ -116,6 +118,8 @@ const App: React.FC = () => {
   const [isLedgerModalOpen, setIsLedgerModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [newLedger, setNewLedger] = useState({ name: '', era: '', cycle: '' });
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [editingCityId, setEditingCityId] = useState<string | null>(null);
 
   const activeLedger = useMemo(() => ledgers.find(l => l.id === activeLedgerId) || null, [ledgers, activeLedgerId]);
   const chartedCitiesInLedger = useMemo(() => savedCities.filter(c => c.ledgerId === activeLedgerId), [savedCities, activeLedgerId]);
@@ -213,10 +217,30 @@ const App: React.FC = () => {
     setDeleteTarget(null);
   };
 
+  const handleWizardSave = (cityData: Omit<CityData, 'id' | 'ledgerId'>) => {
+    if (editingCityId) {
+      setSavedCities(prev => prev.map(c => c.id === editingCityId ? { ...cityData, id: c.id, ledgerId: c.ledgerId } as CityData : c));
+    } else {
+      if (!activeLedger) return;
+      const newCity: CityData = { ...cityData, id: crypto.randomUUID(), ledgerId: activeLedger.id } as CityData;
+      setSavedCities(prev => [...prev, newCity]);
+      setSelectedCityId(newCity.id);
+    }
+    setViewMode(ViewMode.GEOPOLITICAL);
+    setIsWizardOpen(false);
+    setEditingCityId(null);
+  };
+
+  const handleWizardClose = () => {
+    setIsWizardOpen(false);
+    setEditingCityId(null);
+  };
+
   const cleanCoord = (coord: string) => coord.split(' (')[0];
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center p-4 relative overflow-hidden inter">
+    <TooltipProvider>
+      <div className="w-screen h-screen flex items-center justify-center p-4 relative overflow-hidden inter">
       <DynamicBackground seed={selectedCity?.name || 'initial'} loading={loading} />
 
       {deleteTarget && (
@@ -241,6 +265,14 @@ const App: React.FC = () => {
               </div>
            </div>
         </div>
+      )}
+
+      {isWizardOpen && (
+        <CityWizard
+          onSave={handleWizardSave}
+          onClose={handleWizardClose}
+          initialCity={editingCityId ? savedCities.find(c => c.id === editingCityId) : undefined}
+        />
       )}
 
       {isLedgerModalOpen && (
@@ -353,12 +385,19 @@ const App: React.FC = () => {
                          </div>
                        )}
 
-                       <button 
-                         onClick={handleGenerate} 
-                         disabled={loading || !activeLedger} 
+                       <button
+                         onClick={handleGenerate}
+                         disabled={loading || !activeLedger}
                          className="w-full bg-[#FF2C2C] text-white py-4 text-[12px] font-black uppercase tracking-[0.4em] hover:bg-[#F4F1EA] hover:text-[#121212] disabled:opacity-30 mono transition-all shadow-xl active:scale-95"
                        >
                          {loading ? 'COMPILING REALM...' : 'EXECUTE INSCRIPTION'}
+                       </button>
+                       <button
+                         onClick={() => setIsWizardOpen(true)}
+                         disabled={loading || !activeLedger}
+                         className="w-full border border-[#F4F1EA]/20 text-[#F4F1EA]/70 py-3 text-[10px] font-black uppercase tracking-[0.3em] hover:border-[#FF2C2C]/50 hover:text-[#FF2C2C] disabled:opacity-30 mono transition-all"
+                       >
+                         MANUAL INSCRIPTION
                        </button>
                     </div>
                  </div>
@@ -387,8 +426,16 @@ const App: React.FC = () => {
                       </h2>
                     </div>
 
-                    <div className="text-[12px] uppercase tracking-[0.3rem] font-black text-[#F4F1EA] opacity-60 mono text-right whitespace-nowrap pt-2">
-                      SURVEY-ID: {selectedCity.id.slice(0, 8).toUpperCase()}
+                    <div className="flex flex-col items-end gap-2 pt-2">
+                      <div className="text-[12px] uppercase tracking-[0.3rem] font-black text-[#F4F1EA] opacity-60 mono whitespace-nowrap">
+                        SURVEY-ID: {selectedCity.id.slice(0, 8).toUpperCase()}
+                      </div>
+                      <button
+                        onClick={() => { setEditingCityId(selectedCity.id); setIsWizardOpen(true); }}
+                        className="px-3 py-1.5 border border-[#F4F1EA]/20 text-[10px] font-black uppercase tracking-[0.2em] text-[#F4F1EA]/50 hover:border-[#FF2C2C]/50 hover:text-[#FF2C2C] mono transition-all"
+                      >
+                        [ EDIT RECORD ]
+                      </button>
                     </div>
                   </header>
 
@@ -412,7 +459,8 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 

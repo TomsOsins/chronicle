@@ -1,6 +1,7 @@
 import React from 'react';
 import { CityData } from '../types';
 import { AnimatedNumber, AnimatedBar, StaggeredItem } from './AnimatedValue';
+import { TipLabel } from './Tooltip/Tooltip';
 
 interface MercantileFluxProps {
   mercantile: CityData['mercantile'];
@@ -26,14 +27,18 @@ export const MercantileFlux: React.FC<MercantileFluxProps> = ({ mercantile }) =>
           <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Commerce Overview</div>
           <div className="grid grid-cols-2 gap-3">
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Wealth Disparity</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="wealthGap">Wealth Disparity</TipLabel>
+              </div>
               <div className="text-[28px] font-black text-[#F4F1EA] mono">
                 <AnimatedNumber value={wealthGap} suffix="%" />
               </div>
               <AnimatedBar value={wealthGap} delay={200} height="h-1.5" />
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Primary Export</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="primaryExport">Primary Export</TipLabel>
+              </div>
               <div className="text-[13px] font-black uppercase text-[#F4F1EA] mono mt-2">{primaryExport}</div>
             </div>
           </div>
@@ -42,13 +47,17 @@ export const MercantileFlux: React.FC<MercantileFluxProps> = ({ mercantile }) =>
 
       <StaggeredItem index={1}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Commodity Ledger</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="commodityLedger">Commodity Ledger</TipLabel>
+          </div>
           <div className="border border-white/5">
             <div className="grid grid-cols-[1fr_80px_30px_100px] gap-3 px-4 py-2 border-b border-white/10">
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Commodity</span>
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Price</span>
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono"></span>
-              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono text-right">Volatility</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono text-right">
+                <TipLabel termKey="volatility">Volatility</TipLabel>
+              </span>
             </div>
             {commodities.map((c, i) => (
               <StaggeredItem key={i} index={i + 2}>

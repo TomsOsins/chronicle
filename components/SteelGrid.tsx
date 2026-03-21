@@ -2,6 +2,7 @@ import React from 'react';
 import { CityData } from '../types';
 import { DataPanel } from './DataPanel';
 import { AnimatedNumber, AnimatedBar, StaggeredItem } from './AnimatedValue';
+import { TipLabel } from './Tooltip/Tooltip';
 
 interface SteelGridProps {
   infrastructure: CityData['infrastructure'];
@@ -16,16 +17,18 @@ export const SteelGrid: React.FC<SteelGridProps> = ({ infrastructure }) => {
         <section>
           <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Defense Overview</div>
           <div className="grid grid-cols-3 gap-3">
-            <DataPanel label="Siege Days" value={siegeDays} chartHeights={[70, 80, 85, 90, 75, 88, 92]} delay={0} />
-            <DataPanel label="Wall Integ." value={`${wallIntegrity}%`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 20 + wallIntegrity * 0.8)} delay={100} />
-            <DataPanel label="Garrison" value={`${garrisonReadiness}%`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 20 + garrisonReadiness * 0.8)} delay={200} />
+            <DataPanel label="Siege Days" labelTermKey="siegeDays" value={siegeDays} chartHeights={[70, 80, 85, 90, 75, 88, 92]} delay={0} />
+            <DataPanel label="Wall Integ." labelTermKey="wallIntegrity" value={`${wallIntegrity}%`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 20 + wallIntegrity * 0.8)} delay={100} />
+            <DataPanel label="Garrison" labelTermKey="garrison" value={`${garrisonReadiness}%`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 20 + garrisonReadiness * 0.8)} delay={200} />
           </div>
         </section>
       </StaggeredItem>
 
       <StaggeredItem index={1}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Defense Nodes</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="defenseNodes">Defense Nodes</TipLabel>
+          </div>
           <div className="space-y-2">
             {defenseNodes.map((node, i) => (
               <StaggeredItem key={i} index={i + 2}>

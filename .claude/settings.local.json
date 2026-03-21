@@ -10,7 +10,10 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(cygpath -w '$\\(which npx\\)')",
       "Read(//y//**)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(find 'Y:/github/LMT KIbertests/chronicle' -name constants* -o -name constants.ts)",
+      "Bash(npx vite:*)",
+      "Bash(npm ls:*)"
     ]
   }
 }

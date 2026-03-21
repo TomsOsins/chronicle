@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CityData } from '../types';
 import { AnimatedNumber, AnimatedBar, StaggeredItem } from './AnimatedValue';
+import { TipLabel } from './Tooltip/Tooltip';
 
 interface SocialDynamicsProps {
   society: CityData['society'];
@@ -94,14 +95,18 @@ export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
           <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Societal Overview</div>
           <div className="grid grid-cols-2 gap-3">
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Civil Unrest Index</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="unrestIndex">Civil Unrest Index</TipLabel>
+              </div>
               <div className="text-[28px] font-black text-[#F4F1EA] mono">
                 <AnimatedNumber value={unrestIndex} />
               </div>
               <AnimatedBar value={unrestIndex} delay={200} height="h-1.5" />
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Caste Hierarchy</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="casteHierarchy">Caste Hierarchy</TipLabel>
+              </div>
               <div className="text-[10px] font-bold uppercase text-[#F4F1EA]/70 mono mt-2 leading-relaxed">{casteHierarchy}</div>
             </div>
           </div>
@@ -111,7 +116,9 @@ export const SocialDynamics: React.FC<SocialDynamicsProps> = ({ society }) => {
       {/* Demographic Pie + Legend */}
       <StaggeredItem index={1}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Demographic Matrix</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="demographicMatrix">Demographic Matrix</TipLabel>
+          </div>
           <div className="border border-white/5 p-6 hover:border-[#FF2C2C]/20 transition-colors">
             <div className="flex items-center gap-8">
               <PieChart data={matrix.map(d => ({ label: d.species, value: d.percentage }))} />

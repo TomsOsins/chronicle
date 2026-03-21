@@ -2,6 +2,7 @@ import React from 'react';
 import { CityData } from '../../types';
 import { DataPanel } from '../DataPanel';
 import { StaggeredItem } from '../AnimatedValue';
+import { TipLabel, Tooltip } from '../Tooltip/Tooltip';
 
 interface GeopoliticalViewProps {
   city: CityData;
@@ -36,11 +37,13 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Strategic Vitals */}
       <StaggeredItem index={0}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">Strategic Vitals</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4 animate-glitch">
+            <TipLabel termKey="strategicVitals">Strategic Vitals</TipLabel>
+          </div>
           <div className="grid grid-cols-3 gap-3">
-            <DataPanel label="Security" value={strategicVitals.securityRating} chartHeights={[60, 80, 70, 90, 85, 75, 95]} delay={0} />
-            <DataPanel label="Trade Vol." value={`${strategicVitals.tradeVolume}/100`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 40 + strategicVitals.tradeVolume * 0.6)} delay={100} />
-            <DataPanel label="Stability" value={strategicVitals.stabilityStatus} chartHeights={[40, 55, 35, 60, 45, 50, 30]} delay={200} />
+            <DataPanel label="Security" labelTermKey="security" value={strategicVitals.securityRating} chartHeights={[60, 80, 70, 90, 85, 75, 95]} delay={0} />
+            <DataPanel label="Trade Vol." labelTermKey="tradeVolume" value={`${strategicVitals.tradeVolume}/100`} chartHeights={Array.from({ length: 7 }, () => Math.random() * 40 + strategicVitals.tradeVolume * 0.6)} delay={100} />
+            <DataPanel label="Stability" labelTermKey="stability" value={strategicVitals.stabilityStatus} chartHeights={[40, 55, 35, 60, 45, 50, 30]} delay={200} />
           </div>
         </section>
       </StaggeredItem>
@@ -48,10 +51,14 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Territorial Footprint */}
       <StaggeredItem index={1}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Territorial Footprint</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="territorialFootprint">Territorial Footprint</TipLabel>
+          </div>
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/50 mono mb-3">Chokepoints</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/50 mono mb-3">
+                <TipLabel termKey="chokepoints">Chokepoints</TipLabel>
+              </div>
               <div className="space-y-2">
                 {territorialFootprint.chokepoints.map((cp, i) => (
                   <StaggeredItem key={i} index={i + 2}>
@@ -67,7 +74,9 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
               </div>
             </div>
             <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/50 mono mb-3">Buffer Zones</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/50 mono mb-3">
+                <TipLabel termKey="bufferZones">Buffer Zones</TipLabel>
+              </div>
               <div className="space-y-2">
                 {territorialFootprint.bufferZones.map((bz, i) => (
                   <StaggeredItem key={i} index={i + 2}>
@@ -89,12 +98,16 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Resource Matrix */}
       <StaggeredItem index={3}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Resource Matrix</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="resourceMatrix">Resource Matrix</TipLabel>
+          </div>
           <div className="border border-white/5">
             <div className="grid grid-cols-[1fr_80px_1fr] gap-4 px-4 py-2 border-b border-white/10">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Resource</span>
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Status</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">Dependency</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono">
+                <TipLabel termKey="dependency">Dependency</TipLabel>
+              </span>
             </div>
             {resourceMatrix.map((r, i) => (
               <StaggeredItem key={i} index={i + 4}>
@@ -112,18 +125,26 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Mythic Intel */}
       <StaggeredItem index={5}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Mythic Intel</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="mythicIntel">Mythic Intel</TipLabel>
+          </div>
           <div className="grid grid-cols-3 gap-3">
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Ley Line Proximity</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="leyLineProximity">Ley Line Proximity</TipLabel>
+              </div>
               <div className="text-[13px] font-black uppercase text-[#F4F1EA] mono">{mythicIntel.leyLineProximity}</div>
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Arcane Signature</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="arcaneSignature">Arcane Signature</TipLabel>
+              </div>
               <div className="text-[13px] font-black uppercase text-[#FF2C2C] mono animate-glitch">{mythicIntel.arcaneSignature}</div>
             </div>
             <div className="border border-white/5 p-4 hover:border-[#FF2C2C]/20 transition-colors">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">Magic Assets</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#F4F1EA]/45 mono mb-2">
+                <TipLabel termKey="magicAssets">Magic Assets</TipLabel>
+              </div>
               <div className="space-y-1">
                 {mythicIntel.strategicMagicAssets.map((a, i) => (
                   <div key={i} className="text-[10px] font-bold uppercase text-[#F4F1EA]/70 mono">• {a}</div>
@@ -137,7 +158,9 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Districts */}
       <StaggeredItem index={6}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">District Survey</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="districtSurvey">District Survey</TipLabel>
+          </div>
           <div className="space-y-2">
             {city.districts.map((d, i) => (
               <StaggeredItem key={i} index={i + 7}>
@@ -164,7 +187,9 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* NPCs */}
       <StaggeredItem index={8}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Key Personnel</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="keyPersonnel">Key Personnel</TipLabel>
+          </div>
           <div className="space-y-2">
             {city.npcs.map((npc, i) => (
               <StaggeredItem key={i} index={i + 9}>
@@ -188,7 +213,9 @@ export const GeopoliticalView: React.FC<GeopoliticalViewProps> = ({ city }) => {
       {/* Rumors */}
       <StaggeredItem index={10}>
         <section>
-          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">Active Rumors</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#FF2C2C] mono mb-4">
+            <TipLabel termKey="activeRumors">Active Rumors</TipLabel>
+          </div>
           <div className="space-y-2">
             {city.rumors.map((r, i) => (
               <StaggeredItem key={i} index={i + 11}>
