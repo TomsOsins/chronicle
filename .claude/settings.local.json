@@ -4,7 +4,9 @@
       "Bash(unzip -o \"C:/Users/Prometheus/Downloads/guild-archive_-city-codex\\(1\\).zip\" -d .)",
       "Bash(npm install:*)",
       "Bash(rm metadata.json)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(gh repo:*)",
+      "Bash(where gh:*)"
     ]
   }
 }
