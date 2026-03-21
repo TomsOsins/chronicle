@@ -34,11 +34,11 @@ export const CityList: React.FC<CityListProps> = React.memo(({
           {[
             { mode: ViewMode.GEOPOLITICAL, label: '01_SOVEREIGNTY_STATS' },
             { mode: ViewMode.MAP, label: '02_ARCANE_RESONANCE' },
-            { mode: ViewMode.DIVINE, label: '03_THEOLOGICAL_RECORD' },
+            { mode: ViewMode.DIVINE, label: '03_DIVINE_RECORD' },
             { mode: ViewMode.ECONOMY, label: '04_COMMERCE_LEDGER' },
-            { mode: ViewMode.SOCIETY, label: '05_SOCIETAL_LEDGER' },
+            { mode: ViewMode.SOCIETY, label: '05_DEMOGRAPHIC_CENSUS' },
             { mode: ViewMode.STEEL, label: '06_DEFENSE_RECORDS' },
-            { mode: ViewMode.TELEMETRY, label: '07_ABYSSAL_TELEMETRY' }
+            { mode: ViewMode.TELEMETRY, label: '07_PLANAR_TOPOLOGY' }
           ].map(nav => (
             <div
               key={nav.mode}
