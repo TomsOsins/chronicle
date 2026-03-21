@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip -o \"C:/Users/Prometheus/Downloads/guild-archive_-city-codex\\(1\\).zip\" -d .)",
+      "Bash(npm install:*)",
+      "Bash(rm metadata.json)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

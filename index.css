@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-parchment: #F4F1EA;
+  --color-ink: #121212;
+  --color-signal: #FF2C2C;
+  --color-ghost: #666666;
+  --font-display: "Six Caps", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Inter", sans-serif;
+}
+
+body {
+  background-color: #080808;
+  color: var(--color-ink);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 16px;
+  font-family: var(--font-sans);
+}
+
+.six-caps { font-family: var(--font-display); }
+.mono { font-family: var(--font-mono); }
+.inter { font-family: var(--font-sans); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-signal); }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.text-ink { color: var(--color-ink); }
+.text-parchment { color: var(--color-parchment); }
+.text-signal { color: var(--color-signal); }
+.text-ghost { color: var(--color-ghost); }
+.bg-signal { background-color: var(--color-signal); }
+.border-signal { border-color: var(--color-signal); }
