@@ -32,7 +32,7 @@ export const CityList: React.FC<CityListProps> = React.memo(({
         </button>
         <div className="space-y-1">
           {[
-            { mode: ViewMode.GEOPOLITICAL, label: '01_SOVEREIGNTY_STATS_' },
+            { mode: ViewMode.GEOPOLITICAL, label: '01_SOVEREIGNTY_STATS' },
             { mode: ViewMode.MAP, label: '02_ARCANE_RESONANCE' },
             { mode: ViewMode.DIVINE, label: '03_THEOLOGICAL_RECORD' },
             { mode: ViewMode.ECONOMY, label: '04_COMMERCE_LEDGER' },
