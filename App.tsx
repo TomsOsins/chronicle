@@ -16,7 +16,8 @@ import {
   RANDOM_PROMPTS,
   LEDGER_PROCESSES,
   STORAGE_KEYS,
-  DEFAULT_CITY
+  DEFAULT_CITY,
+  DEFAULT_CITIES
 } from './constants';
 
 import { LedgerSelector } from './components/Sidebar/LedgerSelector';
@@ -96,7 +97,7 @@ const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GEOPOLITICAL);
   const [currentProcessIndex, setCurrentProcessIndex] = useState(0);
   const [overallProgress, setOverallProgress] = useState(0);
-  const [isInscriptionExpanded, setIsInscriptionExpanded] = useState(true);
+  const [isInscriptionExpanded, setIsInscriptionExpanded] = useState(false);
   const [inputPrompt, setInputPrompt] = useState(() =>
     RANDOM_PROMPTS[Math.floor(Math.random() * RANDOM_PROMPTS.length)]
   );
@@ -107,7 +108,7 @@ const App: React.FC = () => {
 
   const [ledgers, setLedgers] = useState<Ledger[]>([DEFAULT_LEDGER]);
   const [activeLedgerId, setActiveLedgerId] = useState<string | null>(DEFAULT_LEDGER.id);
-  const [savedCities, setSavedCities] = useState<CityData[]>([DEFAULT_CITY]);
+  const [savedCities, setSavedCities] = useState<CityData[]>(DEFAULT_CITIES);
 
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [isLedgerModalOpen, setIsLedgerModalOpen] = useState(false);
@@ -139,24 +140,26 @@ const App: React.FC = () => {
         try {
           const localLedgers = JSON.parse(localStorage.getItem(STORAGE_KEYS.LEDGERS) || '[]');
           const localCities = JSON.parse(localStorage.getItem(STORAGE_KEYS.CITIES) || '[]');
-          if ((localLedgers.length > 0 && localLedgers[0].id !== 'genesis-001') || localCities.length > 1 || (localCities.length === 1 && localCities[0].id !== 'default-test-city-001')) {
+          const defaultCityIds = DEFAULT_CITIES.map(c => c.id);
+          const hasCustomData = (localLedgers.length > 0 && localLedgers[0].id !== 'genesis-001') || localCities.some((c: CityData) => !defaultCityIds.includes(c.id));
+          if (hasCustomData) {
             // Non-default local data exists — offer migration
             setLedgers(localLedgers.length > 0 ? localLedgers : [DEFAULT_LEDGER]);
-            setSavedCities(localCities.length > 0 ? localCities : [DEFAULT_CITY]);
+            setSavedCities(localCities.length > 0 ? localCities : DEFAULT_CITIES);
             setActiveLedgerId(localLedgers.length > 0 ? localLedgers[0].id : DEFAULT_LEDGER.id);
             setShowMigration(true);
           } else {
             // Fresh account, no meaningful local data
             setLedgers([DEFAULT_LEDGER]);
-            setSavedCities([DEFAULT_CITY]);
+            setSavedCities(DEFAULT_CITIES);
             setActiveLedgerId(DEFAULT_LEDGER.id);
-            // Seed default ledger to Supabase
+            // Seed default ledger + cities to Supabase
             sbUpsertLedger(DEFAULT_LEDGER, user.id);
-            sbUpsertCity(DEFAULT_CITY, user.id);
+            DEFAULT_CITIES.forEach(city => sbUpsertCity(city, user.id));
           }
         } catch {
           setLedgers([DEFAULT_LEDGER]);
-          setSavedCities([DEFAULT_CITY]);
+          setSavedCities(DEFAULT_CITIES);
           setActiveLedgerId(DEFAULT_LEDGER.id);
         }
       }
@@ -469,7 +472,7 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className={`relative z-40 bg-[#121212] transition-all duration-500 ease-in-out flex flex-col overflow-hidden rounded-bl-[18px] ${isInscriptionExpanded ? 'max-h-[440px]' : 'max-h-[56px]'}`}>
+              <div className={`relative z-40 bg-[#121212] transition-all duration-500 ease-in-out flex flex-col overflow-hidden rounded-bl-[18px] ${isInscriptionExpanded ? 'max-h-[440px]' : 'max-h-[56px] animate-inscription-pulse'}`}>
                  <button 
                    onClick={() => setIsInscriptionExpanded(!isInscriptionExpanded)} 
                    className="w-full flex justify-between items-center py-4 px-10 shrink-0 hover:bg-white/5 transition-colors"

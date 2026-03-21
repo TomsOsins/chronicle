@@ -136,3 +136,214 @@ export const DEFAULT_CITY: CityData = {
     ]
   }
 };
+
+export const DEFAULT_CITY_2: CityData = {
+  id: 'default-test-city-002',
+  ledgerId: 'genesis-001',
+  name: 'ALTDORF',
+  title: 'Seat of the Emperor // Reikland',
+  population: 105000,
+  government: 'Emperor Karl Franz & The Imperial Court',
+  economy: 'Imperial Taxation, Arcane Commerce, River Trade, Printing',
+  magicLevel: 9,
+  history: 'The beating heart of the Empire, built where the rivers Reik and Talabec converge. Altdorf is the city of Sigmar\'s faithful, home to the Colleges of Magic, and the seat from which Karl Franz commands the mightiest human nation in the Old World.',
+  latitude: '48.21N',
+  longitude: '11.38E',
+
+  strategicVitals: {
+    securityRating: 'Maximum',
+    tradeVolume: 88,
+    stabilityStatus: 'STABLE'
+  },
+  territorialFootprint: {
+    chokepoints: [
+      { name: 'Reiksport Docks', status: 'SECURE', description: 'Primary river trade hub. Patrolled by the Reiksguard.' },
+      { name: 'Ostwald Gate', status: 'CRITICAL', description: 'Eastern approach vulnerable to Beastmen incursions from the Drakwald.' }
+    ],
+    bufferZones: [
+      { name: 'The Reikwald', status: 'HOSTILE', description: 'Dense forest harboring Beastmen warherds and greenskin raiders.' },
+      { name: 'Reikland Breadbasket', status: 'FRIENDLY', description: 'Fertile farmland sustaining the capital\'s vast population.' }
+    ]
+  },
+  resourceMatrix: [
+    { resource: 'Warpstone Residue', status: 'DEFICIT', dependency: 'Confiscated Contraband' },
+    { resource: 'Imperial Grain', status: 'SURPLUS', dependency: 'Reikland Farms' },
+    { resource: 'Arcane Reagents', status: 'STABLE', dependency: 'College Procurement' }
+  ],
+  mythicIntel: {
+    leyLineProximity: 'INTERSECTING',
+    strategicMagicAssets: ['The Colleges of Magic', 'Light Order Spire', 'Amethyst Ossuary'],
+    arcaneSignature: 'RESONANCE-AZYR-V8'
+  },
+
+  districts: [
+    { name: 'THE PALACE QUARTER', description: 'The Imperial Palace and surrounding noble estates. Heavily guarded by the Reiksguard.', vibe: 'Imperial Grandeur', dangerLevel: 1 },
+    { name: 'THE COLLEGE DISTRICT', description: 'Eight towers of the Colleges of Magic dominate the skyline, each warping reality around them.', vibe: 'Arcane Unease', dangerLevel: 4 },
+    { name: 'DOCKLANDS', description: 'A chaotic sprawl of warehouses, taverns, and smuggler dens along the Reik.', vibe: 'Grimy Commerce', dangerLevel: 7 },
+    { name: 'THE TEMPLE DISTRICT', description: 'Grand cathedral of Sigmar and shrines to a dozen other gods. Witch Hunters patrol here.', vibe: 'Zealous Piety', dangerLevel: 3 }
+  ],
+  npcs: [
+    { name: 'Emperor Karl Franz', role: 'Emperor & Elector Count', description: 'A charismatic warrior-statesman who rides the griffon Deathclaw into battle.', secret: 'He fears the Empire is rotting from within faster than any external threat.' },
+    { name: 'Balthasar Gelt', role: 'Supreme Patriarch of Magic', description: 'Gold Wizard of terrifying power, face hidden behind a golden mask.', secret: 'His experiments with transmutation have gone far beyond sanctioned limits.' },
+    { name: 'Volkmar the Grim', role: 'Grand Theogonist', description: 'The highest authority of the Cult of Sigmar. Rides the War Altar into battle.', secret: 'He has seen visions of Chaos that he shares with no one.' }
+  ],
+  rumors: [
+    { source: 'A terrified student', text: 'Something escaped from the Amethyst College last night. The dead in Morr\'s Garden were... restless.', truthValue: 'True' },
+    { source: 'Dockside whisper', text: 'Skaven have been spotted in the sewers beneath the Docklands.', truthValue: 'True' },
+    { source: 'Court gossip', text: 'The Emperor is considering an alliance with the Dwarfs of Karaz-a-Karak against a rising Waaagh.', truthValue: 'Partial' }
+  ],
+  leylineNodes: [
+    { name: 'Celestial Observatory', type: 'Azyr', frequency: 'Constant Harmonic', stability: 95, effect: 'Grants prophetic dreams to those who sleep nearby.', coordinates: { x: 40, y: 20 } },
+    { name: 'Bright College Furnace', type: 'Aqshy', frequency: 'Volatile Pulse', stability: 45, effect: 'Ambient temperature rises sharply. Fires burn hotter.', coordinates: { x: 60, y: 35 } },
+    { name: 'Amethyst Ossuary', type: 'Shyish', frequency: 'Death Whisper', stability: 70, effect: 'Time feels distorted. Shadows move independently.', coordinates: { x: 35, y: 65 } },
+    { name: 'Jade College Gardens', type: 'Ghyran', frequency: 'Living Rhythm', stability: 88, effect: 'Plants grow at unnatural speed. Wounds close faster.', coordinates: { x: 20, y: 50 } },
+    { name: 'Grey College Threshold', type: 'Ulgu', frequency: 'Shifting Fog', stability: 30, effect: 'The college cannot be found by those not invited.', coordinates: { x: 50, y: 45 } }
+  ],
+  theology: {
+    pantheon: [
+      { name: 'Sigmar', domain: 'Empire & War', influence: 60, heresyLevel: 1 },
+      { name: 'Ulric', domain: 'Winter & Battle', influence: 20, heresyLevel: 2 },
+      { name: 'Morr', domain: 'Death & Dreams', influence: 15, heresyLevel: 1 }
+    ],
+    faithTension: 55,
+    miracleFrequency: 'During Sigmarite holy days'
+  },
+  mercantile: {
+    commodities: [
+      { name: 'Blackpowder', price: '80g/keg', trend: 'UP', volatility: 20 },
+      { name: 'Printed Texts', price: '5g/volume', trend: 'UP', volatility: 5 },
+      { name: 'Dwarven Steel', price: '200g/ingot', trend: 'STABLE', volatility: 10 },
+      { name: 'Arcane Components', price: '500g/set', trend: 'UP', volatility: 35 }
+    ],
+    wealthGap: 82,
+    primaryExport: 'Imperial Authority & Printed Knowledge'
+  },
+  society: {
+    matrix: [
+      { species: 'Human', percentage: 85 },
+      { species: 'Halfling', percentage: 6 },
+      { species: 'Dwarf', percentage: 5 },
+      { species: 'Elf', percentage: 2 },
+      { species: 'Other', percentage: 2 }
+    ],
+    unrestIndex: 38,
+    casteHierarchy: 'Emperor > Electors > Nobility > Burghers > Peasants > Mutants'
+  },
+  infrastructure: {
+    siegeDays: 420,
+    wallIntegrity: 92,
+    garrisonReadiness: 96,
+    defenseNodes: [
+      { name: 'The Reiksguard Barracks', integrity: 100, type: 'Elite Garrison' },
+      { name: 'Helblaster Battery', integrity: 88, type: 'Artillery Emplacement' },
+      { name: 'River Chain', integrity: 94, type: 'Maritime Barrier' },
+      { name: 'College Wards', integrity: 78, type: 'Arcane Defense Grid' }
+    ]
+  }
+};
+
+export const DEFAULT_CITY_3: CityData = {
+  id: 'default-test-city-003',
+  ledgerId: 'genesis-001',
+  name: 'WHITERUN',
+  title: 'Plains District Capital // Central Skyrim',
+  population: 12000,
+  government: 'Jarl Balgruuf the Greater & The Hold Court',
+  economy: 'Agriculture, Smithing, Mead Brewing, Caravan Trade',
+  magicLevel: 3,
+  history: 'Built around the legendary mead hall Dragonsreach, where an ancient dragon was once imprisoned. Whiterun sits at the crossroads of Skyrim, making it the most strategically vital hold. Jarl Balgruuf has maintained neutrality in the civil war — for now.',
+  latitude: '63.42N',
+  longitude: '22.15W',
+
+  strategicVitals: {
+    securityRating: 'Moderate',
+    tradeVolume: 65,
+    stabilityStatus: 'FRAGILE'
+  },
+  territorialFootprint: {
+    chokepoints: [
+      { name: 'Main Gate', status: 'SECURE', description: 'Fortified stone gate with drawbridge. Single point of entry from the plains.' },
+      { name: 'Great Bridge', status: 'CRITICAL', description: 'Exposed approach to Dragonsreach. Vulnerable during siege.' }
+    ],
+    bufferZones: [
+      { name: 'Whiterun Hold Plains', status: 'FRIENDLY', description: 'Vast tundra farmlands. Giant camps dot the landscape.' },
+      { name: 'Western Watchtower', status: 'HOSTILE', description: 'Recently destroyed by dragon attack. Under reconstruction.' }
+    ]
+  },
+  resourceMatrix: [
+    { resource: 'Iron Ore', status: 'SURPLUS', dependency: 'Local Mines' },
+    { resource: 'Lumber', status: 'DEFICIT', dependency: 'Falkreath & Riverwood' },
+    { resource: 'Food Stores', status: 'STABLE', dependency: 'Whiterun Farms & Hunting' }
+  ],
+  mythicIntel: {
+    leyLineProximity: 'INTERACTING',
+    strategicMagicAssets: ['Dragonsreach Trap', 'Skyforge', 'Gildergreen'],
+    arcaneSignature: 'RESONANCE-THUUM-V1'
+  },
+
+  districts: [
+    { name: 'THE PLAINS DISTRICT', description: 'Market stalls, shops, and the Bannered Mare tavern. Heart of daily commerce.', vibe: 'Rustic Commerce', dangerLevel: 2 },
+    { name: 'THE WIND DISTRICT', description: 'Residential area with the Gildergreen tree and Jorrvaskr mead hall of the Companions.', vibe: 'Stoic Honor', dangerLevel: 3 },
+    { name: 'THE CLOUD DISTRICT', description: 'Dragonsreach and the Jarl\'s court tower above all. Do you get up here often?', vibe: 'Austere Authority', dangerLevel: 1 },
+    { name: 'THE UNDERFORGE', description: 'Hidden beneath Jorrvaskr. Sacred ground of the Companions\' inner circle.', vibe: 'Primal Secrecy', dangerLevel: 8 }
+  ],
+  npcs: [
+    { name: 'Jarl Balgruuf the Greater', role: 'Jarl of Whiterun', description: 'A pragmatic ruler who values his hold\'s independence above all political allegiance.', secret: 'He knows the dragons\' return fulfills an ancient Nordic prophecy he hoped was myth.' },
+    { name: 'Kodlak Whitemane', role: 'Harbinger of the Companions', description: 'The wise and aging leader of the legendary warrior guild.', secret: 'He seeks a cure for the bestial curse that binds the Circle.' },
+    { name: 'Farengar Secret-Fire', role: 'Court Wizard', description: 'Whiterun\'s resident mage, obsessed with dragon lore and ancient texts.', secret: 'He has been in contact with the Thalmor regarding dragon research.' }
+  ],
+  rumors: [
+    { source: 'Guard patrol', text: 'A dragon was sighted near the Western Watchtower. The Jarl is mobilizing troops.', truthValue: 'True' },
+    { source: 'Bard at the Bannered Mare', text: 'The Companions are more than mere warriors. Strange howls echo from Jorrvaskr at night.', truthValue: 'True' },
+    { source: 'Traveling merchant', text: 'The Stormcloaks are planning to demand Balgruuf pick a side. War may come to Whiterun.', truthValue: 'Partial' }
+  ],
+  leylineNodes: [
+    { name: 'The Skyforge', type: 'Aetherial', frequency: 'Ancient Constant', stability: 98, effect: 'Steel forged here carries an otherworldly edge. The forge predates the city.', coordinates: { x: 50, y: 30 } },
+    { name: 'Dragonsreach Pinnacle', type: 'Draconic', frequency: 'Dormant Resonance', stability: 60, effect: 'The ancient dragon trap still hums with binding magic.', coordinates: { x: 50, y: 15 } },
+    { name: 'The Gildergreen', type: 'Nature', frequency: 'Seasonal Pulse', stability: 40, effect: 'Connected to the Eldergleam. Withering has weakened the node.', coordinates: { x: 45, y: 45 } },
+    { name: 'Underforge Nexus', type: 'Lycanthropic', frequency: 'Lunar Tide', stability: 55, effect: 'Power waxes and wanes with the moons. Primal energy bleeds through.', coordinates: { x: 55, y: 50 } }
+  ],
+  theology: {
+    pantheon: [
+      { name: 'Talos', domain: 'War & Governance', influence: 35, heresyLevel: 9 },
+      { name: 'Kynareth', domain: 'Sky & Nature', influence: 40, heresyLevel: 1 },
+      { name: 'Arkay', domain: 'Life & Death', influence: 20, heresyLevel: 1 }
+    ],
+    faithTension: 78,
+    miracleFrequency: 'Suppressed by Thalmor decree'
+  },
+  mercantile: {
+    commodities: [
+      { name: 'Skyforge Steel', price: '350g/blade', trend: 'UP', volatility: 5 },
+      { name: 'Honningbrew Mead', price: '8g/cask', trend: 'STABLE', volatility: 10 },
+      { name: 'Mammoth Tusks', price: '200g/pair', trend: 'DOWN', volatility: 25 },
+      { name: 'Whiterun Wheat', price: '2g/bushel', trend: 'STABLE', volatility: 8 }
+    ],
+    wealthGap: 55,
+    primaryExport: 'Agricultural Goods & Forged Arms'
+  },
+  society: {
+    matrix: [
+      { species: 'Nord', percentage: 72 },
+      { species: 'Imperial', percentage: 10 },
+      { species: 'Redguard', percentage: 6 },
+      { species: 'Breton', percentage: 5 },
+      { species: 'Other', percentage: 7 }
+    ],
+    unrestIndex: 62,
+    casteHierarchy: 'Jarl > Thanes > Housecarls > Freemen > Farmhands > Beggars'
+  },
+  infrastructure: {
+    siegeDays: 90,
+    wallIntegrity: 75,
+    garrisonReadiness: 70,
+    defenseNodes: [
+      { name: 'Whiterun Main Gate', integrity: 85, type: 'Fortified Entrance' },
+      { name: 'Dragonsreach', integrity: 95, type: 'Citadel Keep' },
+      { name: 'Guard Barracks', integrity: 72, type: 'Garrison Post' },
+      { name: 'Western Watchtower', integrity: 15, type: 'Ruined Outpost' }
+    ]
+  }
+};
+
+export const DEFAULT_CITIES: CityData[] = [DEFAULT_CITY, DEFAULT_CITY_2, DEFAULT_CITY_3];
