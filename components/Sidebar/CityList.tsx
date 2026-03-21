@@ -26,7 +26,7 @@ export const CityList: React.FC<CityListProps> = ({
           onClick={() => onSelectCity(null)} 
           className="w-full flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-[0.15em] text-[#FF2C2C] hover:bg-[#FF2C2C] hover:text-white py-4 border border-[#FF2C2C]/20 transition-all mono mb-6"
         >
-          â BACK TO LEDGER
+          ← BACK TO LEDGER
         </button>
         <div className="space-y-1">
           {[
@@ -42,7 +42,7 @@ export const CityList: React.FC<CityListProps> = ({
               onClick={() => !loading && onSetViewMode(nav.mode)} 
               className={`flex justify-between items-center py-4 border-b border-[#FF2C2C]/10 cursor-pointer font-black uppercase tracking-[0.1em] text-[10.5px] px-4 rounded-sm mono transition-all ${viewMode === nav.mode ? 'bg-[#121212] text-white scale-[1.02]' : 'text-[#121212] hover:bg-[#FF2C2C]/10'}`}
             >
-              {nav.label} <span>{viewMode === nav.mode ? 'â' : '+'}</span>
+              {nav.label} <span>{viewMode === nav.mode ? '→' : '+'}</span>
             </div>
           ))}
         </div>
