@@ -9,6 +9,7 @@ import { SocialDynamics } from './components/SocialDynamics';
 import { SteelGrid } from './components/SteelGrid';
 const AbyssalTelemetry = React.lazy(() => import('./components/AbyssalTelemetry').then(m => ({ default: m.AbyssalTelemetry })));
 import { generateCity } from './services/geminiService';
+import { serializeCoalcoreExport } from './utils/coalcoreExport';
 import { CityData, ViewMode, Ledger } from './types';
 import { CityWizard } from './components/CityWizard/CityWizard';
 import { TooltipProvider } from './components/Tooltip/TooltipProvider';
@@ -574,6 +575,21 @@ const App: React.FC = () => {
                         className="px-3 py-1.5 border border-[#F4F1EA]/20 text-[10px] font-black uppercase tracking-[0.2em] text-[#F4F1EA]/50 hover:border-[#FF2C2C]/50 hover:text-[#FF2C2C] mono transition-all"
                       >
                         [ EDIT RECORD ]
+                      </button>
+                      <button
+                        onClick={() => {
+                          const json = serializeCoalcoreExport(selectedCity);
+                          const blob = new Blob([json], { type: 'application/json' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `${selectedCity.name.toLowerCase().replace(/\s+/g, '-')}-coalcore.json`;
+                          a.click();
+                          URL.revokeObjectURL(url);
+                        }}
+                        className="px-3 py-1.5 border border-[#F4F1EA]/20 text-[10px] font-black uppercase tracking-[0.2em] text-[#F4F1EA]/50 hover:border-[#FF2C2C]/50 hover:text-[#FF2C2C] mono transition-all"
+                      >
+                        [ EXPORT RECORD ]
                       </button>
                     </div>
                   </header>
