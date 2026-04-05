@@ -7,6 +7,7 @@ export interface District {
 }
 
 export interface NPC {
+  id?: string;
   name: string;
   role: string;
   description: string;
@@ -53,6 +54,9 @@ export interface DefenseNode {
   type: string;
 }
 
+export type Biome = 'coastal' | 'river' | 'forest' | 'plains' | 'mountain' | 'desert' | 'swamp' | 'crossroads';
+export type SettlementAge = 'new' | 'established' | 'ancient';
+
 export interface CityData {
   id: string;
   ledgerId: string;
@@ -62,6 +66,8 @@ export interface CityData {
   government: string;
   economy: string;
   magicLevel: number; // 1-10
+  biome?: Biome;
+  age?: SettlementAge;
   districts: District[];
   npcs: NPC[];
   rumors: Rumor[];

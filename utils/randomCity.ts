@@ -1,7 +1,10 @@
-import { CityData, District, NPC, Rumor, LeylineNode, Deity, Commodity, Demographic, DefenseNode } from '../types';
+import { CityData, District, NPC, Rumor, LeylineNode, Deity, Commodity, Demographic, DefenseNode, Biome, SettlementAge } from '../types';
 
 const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 const range = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+/** Generate a short unique id (not cryptographic — just needs to be collision-resistant within a session) */
+const uid = () => Math.random().toString(36).slice(2, 10);
 const pickN = <T>(arr: T[], n: number): T[] => {
   const shuffled = [...arr].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, n);
@@ -148,6 +151,10 @@ const commodityPrices = ['5g/lb', '12g/lb', '45g/oz', '80g/bolt', '2g/barrel', '
 // ─── SPECIES ───
 const speciesNames = ['Human', 'Elf', 'Dwarf', 'Halfling', 'Tiefling', 'Orc', 'Gnome', 'Dragonborn', 'Half-Elf', 'Goblin', 'Tabaxi', 'Kenku', 'Firbolg', 'Aasimar', 'Genasi', 'Changeling'];
 
+// ─── COALCORE FIELDS ───
+const biomes: Biome[] = ['coastal', 'river', 'forest', 'plains', 'mountain', 'desert', 'swamp', 'crossroads'];
+const ages: SettlementAge[] = ['new', 'established', 'established', 'ancient']; // established weighted higher
+
 // ─── DEFENSE ───
 const defenseNodeNames = ['Main Gate Tower', 'Harbor Battery', 'North Watchtower', 'The Iron Bastion', 'River Portcullis', 'Mage\'s Redoubt', 'Southern Palisade', 'The Keep', 'Underground Bunker', 'Sky Spire', 'Wall of Thorns', 'Siege Engine Platform'];
 const defenseNodeTypes = ['Primary Bastion', 'Artillery Platform', 'Watchtower', 'Fortified Gate', 'Naval Defense', 'Arcane Ward', 'Field Fortification', 'Command Center', 'Hidden Position', 'Anti-Air', 'Natural Barrier', 'Mobile Platform'];
@@ -170,6 +177,7 @@ export function randomDistrict(): District {
 
 export function randomNPC(): NPC {
   return {
+    id: `npc_${uid()}`,
     name: `${pick(npcFirstNames)} ${pick(npcLastNames)}`,
     role: pick(npcRoles),
     description: pick(npcDescriptions),
@@ -269,6 +277,8 @@ export function randomFullCity(): Omit<CityData, 'id' | 'ledgerId'> {
     history: pick(histories),
     latitude: `${range(10, 80)}.${range(10, 99)}${pick(['N', 'S'])}`,
     longitude: `${range(10, 170)}.${range(10, 99)}${pick(['E', 'W'])}`,
+    biome: pick(biomes),
+    age: pick(ages),
 
     strategicVitals: {
       securityRating: pick(['Critical', 'Low', 'Moderate', 'High', 'Maximum']),

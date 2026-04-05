@@ -17,6 +17,16 @@ const citySchema = {
     history: { type: Type.STRING },
     latitude: { type: Type.STRING },
     longitude: { type: Type.STRING },
+    biome: {
+      type: Type.STRING,
+      enum: ['coastal', 'river', 'forest', 'plains', 'mountain', 'desert', 'swamp', 'crossroads'],
+      description: 'Primary geographic biome of the settlement. coastal = on a sea/ocean; river = on a major river; forest = surrounded by woodland; plains = open flatlands; mountain = highland/alpine; desert = arid region; swamp = wetlands; crossroads = major trade intersection.'
+    },
+    age: {
+      type: Type.STRING,
+      enum: ['new', 'established', 'ancient'],
+      description: 'Approximate age of the settlement. new = founded within the last century; established = 100-500 years old; ancient = 500+ years with deep history.'
+    },
     strategicVitals: {
       type: Type.OBJECT,
       properties: {
@@ -217,7 +227,7 @@ const citySchema = {
       required: ["siegeDays", "wallIntegrity", "garrisonReadiness", "defenseNodes"]
     }
   },
-  required: ["name", "title", "population", "government", "economy", "magicLevel", "history", "latitude", "longitude", "strategicVitals", "territorialFootprint", "resourceMatrix", "mythicIntel", "districts", "npcs", "rumors", "leylineNodes", "theology", "mercantile", "society", "infrastructure"]
+  required: ["name", "title", "population", "government", "economy", "magicLevel", "history", "latitude", "longitude", "biome", "age", "strategicVitals", "territorialFootprint", "resourceMatrix", "mythicIntel", "districts", "npcs", "rumors", "leylineNodes", "theology", "mercantile", "society", "infrastructure"]
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
